@@ -1,17 +1,30 @@
-import countryStates  from './assets/static/country-states.json'
+import countryStates  from '../assets/static/country-states.json'
 
 export const baseUrl = import.meta.env.VITE_API_URL;
 
-export const eventTypes = [
+export const accountTypes = [
     {
-        label: 'Regular',
-        value:'regular'
+        label: 'Producer',
+        value:'regular',
+        description: 'You own a farm that produces crops, livestock, or both, and you need this account to record farm activities.'
     },
     {
-        label: 'Versus',
-        value:'versus'
+        label: 'Regulator',
+        value:'regulator',
+        description: 'You work for an agricultural regulatory agency and use this account to carry out regulatory duties.'
+    },
+    {
+        label: 'Inspector',
+        value:'inspector',
+        description: 'You work for an inspection agency and use this account to carry out inspections.'
+    },
+    {
+        label: 'Exporter',
+        value:'exporter',
+        description: 'You export agricultural produce and need this account to verify the traceability history of goods purchased for export.'
     },
 ]
+// 'exporter', 'producer', 'inspector', 'regulator',
 
 export const eventVenueTypes = [
     {

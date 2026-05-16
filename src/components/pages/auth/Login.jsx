@@ -16,7 +16,7 @@ const Login = () => {
 
       <div className='mt-20'>
         <h3 className="text-[24px] text-at-black font-medium dark:text-at-white tracking-tighter font-space-grotesk text-left mx-auto">Welcome</h3>
-        <p className="text-left mt-3 text-at-black text-sm dark:text-at-white">Please provide your email address and password to proceed to the administrator dashboard</p>
+        <p className="text-left mt-3 text-at-black text-sm dark:text-at-white">Please provide your email address and password to proceed to your dashboard</p>
         
         <div className='mt-4'>
           <TextField 

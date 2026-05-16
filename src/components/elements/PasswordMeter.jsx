@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import CheckIcon from './icons/CheckIcon';
+import CheckIcon from '../elements/icons/CheckIcon'
 
 const PasswordMeter = ({ password }) => {
   const [checks, setChecks] = useState({
@@ -27,55 +27,55 @@ const PasswordMeter = ({ password }) => {
   }, [password]);
 
   return (
-    <div className='mt-[20px]'>
-      <h3 className='text-gray-500 mb-[20px] text-sm'>A good password should:</h3>
-      <div className='grid grid-cols-1 gap-[15px] w-full px-[10px]'>
+    <div className='mt-5'>
+      <h3 className='text-gray-500 mb-5 text-sm'>A good password should:</h3>
+      <div className='grid grid-cols-1 gap-3.75 w-full px-2.5'>
         <div className='w-full'>
-            <div className='flex items-center gap-x-[10px]'>
-                <div className={`w-[25px] h-[25px] flex items-center justify-center transition duration-200 rounded-full ${checks.lowercase ? 'bg-green-600' : 'bg-gray-100'}`}>
+            <div className='flex items-center gap-x-2.5'>
+                <div className={`w-6.25 h-6.25 flex items-center justify-center transition duration-200 rounded-full ${checks.lowercase ? 'bg-accent' : 'bg-gray-100 dark:bg-at-dark-gray/20'}`}>
                     {checks.lowercase && <CheckIcon className={'text-white w-5 h-5'} />}
                 </div>
-                <p className={`text-xs transition duration-200 font-[500] ${checks.lowercase ? 'text-doiteasy-black' : 'text-gray-400'}`}>
+                <p className={`text-xs transition duration-200 font-medium ${checks.lowercase ? 'text-gray-500 dark:text-gray-300' : 'text-gray-400'}`}>
                     Contain at least one lowercase character
                 </p>
             </div>
         </div>
         <div className='w-full'>
-            <div className='flex items-center gap-x-[10px]'>
-                <div className={`w-[25px] h-[25px] transition duration-200 flex items-center justify-center rounded-full ${checks.uppercase ? 'bg-green-600' : 'bg-gray-100'}`}>
+            <div className='flex items-center gap-x-2.5'>
+                <div className={`w-6.25 h-6.25 transition duration-200 flex items-center justify-center rounded-full ${checks.uppercase ? 'bg-accent' : 'bg-gray-100 dark:bg-at-dark-gray/20'}`}>
                     {checks.uppercase && <CheckIcon className={'text-white w-5 h-5'} />}
                 </div>
-                <p className={`text-xs transition duration-200 font-[500] ${checks.uppercase ? 'text-doiteasy-black' : 'text-gray-400'}`}>
+                <p className={`text-xs transition duration-200 font-medium ${checks.lowercase ? 'text-gray-500 dark:text-gray-300' : 'text-gray-400'}`}>
                     Contain at least one uppercase character
                 </p>
             </div>
         </div>
         <div className='w-full'>
-            <div className='flex items-center gap-x-[10px]'>
-                <div className={`w-[25px] h-[25px] flex items-center justify-center transition duration-200 rounded-full ${checks.special ? 'bg-green-600' : 'bg-gray-100'}`}>
+            <div className='flex items-center gap-x-2.5'>
+                <div className={`w-6.25 h-6.25 flex items-center justify-center transition duration-200 rounded-full ${checks.special ? 'bg-accent' : 'bg-gray-100 dark:bg-at-dark-gray/20'}`}>
                     {checks.special && <CheckIcon className={'text-white w-5 h-5'} />}
                 </div>
-                <p className={`text-xs transition duration-200 font-[500] ${checks.special ? 'text-doiteasy-black' : 'text-gray-400'}`}>
+               <p className={`text-xs transition duration-200 font-medium ${checks.lowercase ? 'text-gray-500 dark:text-gray-300' : 'text-gray-400'}`}>
                     Contain at least one special character (eg: !@#$%^&*)
                 </p>
             </div>
         </div>
         <div className='w-full'>
-            <div className='flex items-center gap-x-[10px]'>
-                <div className={`w-[25px] h-[25px] flex items-center justify-center transition duration-200 rounded-full ${checks.number ? 'bg-green-600' : 'bg-gray-100'}`}>
+            <div className='flex items-center gap-x-2.5'>
+                <div className={`w-6.25 h-6.25 flex items-center justify-center transition duration-200 rounded-full ${checks.number ? 'bg-accent' : 'bg-gray-100 dark:bg-at-dark-gray/20'}`}>
                     {checks.number && <CheckIcon className={'text-white w-5 h-5'} />}
                 </div>
-                <p className={`text-xs transition duration-200 font-[500] ${checks.number ? 'text-doiteasy-black' : 'text-gray-400'}`}>
+                <p className={`text-xs transition duration-200 font-medium ${checks.lowercase ? 'text-gray-500 dark:text-gray-300' : 'text-gray-400'}`}>
                     Contain at least one number
                 </p>
             </div>
         </div>
         <div className='w-full'>
-            <div className='flex items-center gap-x-[10px]'>
-                <div className={`w-[25px] h-[25px] flex items-center justify-center transition duration-200 rounded-full ${checks.minEightChars ? 'bg-green-600' : 'bg-gray-100'}`}>
+            <div className='flex items-center gap-x-2.5'>
+                <div className={`w-6.25 h-6.25 flex items-center justify-center transition duration-200 rounded-full ${checks.minEightChars ? 'bg-accent' : 'bg-gray-100 dark:bg-at-dark-gray/20'}`}>
                     {checks.minEightChars && <CheckIcon className={'text-white w-5 h-5'} />}
                 </div>
-                <p className={`text-xs transition duration-200 font-[500] ${checks.minEightChars ? 'text-doiteasy-black' : 'text-gray-400'}`}>
+                <p className={`text-xs transition duration-200 font-medium ${checks.lowercase ? 'text-gray-500 dark:text-gray-300' : 'text-gray-400'}`}>
                     Be a minimum of eight characters long
                 </p>
             </div>

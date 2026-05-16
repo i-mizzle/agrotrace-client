@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import EyeIcon from '../icons/EyeIcon'
 import EyeOffIcon from '../icons/EyeOffIcon'
+import PasswordMeter from '../PasswordMeter'
 
 const PasswordField = ({
     requiredField,
@@ -37,7 +38,7 @@ const PasswordField = ({
                 className={`text-sm lg:text-md cursor-text z-10 relative py-1 transition mb-2 block duration-200  
                 ${hasError ? 'text-red-600' : 'text-gray-500 dark:text-gray-300'}`}
             >
-             {requiredField && requiredField === true && <span className='text-red-600'>*</span>}   {inputLabel}
+                {inputLabel} {requiredField && requiredField === true && <span className='text-red-400'>*</span>}
             </label>
 
             <span className={`absolute z-40 cursor-pointer pt-2 top-11 right-4`} onClick={(e)=>{toggleHiddenInput(e)}}>
