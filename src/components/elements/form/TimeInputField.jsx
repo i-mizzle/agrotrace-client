@@ -28,7 +28,7 @@ const TimeInputField = ({inputLabel, requiredField, fieldId, hasError, preloadVa
                 colon=":"                          // {String}   default: ":"
                 showSeconds={false}                        // {Boolean}  default: false
             />
-            <TimeIcon className='absolute top-[37px] right-[10px] text-gray-400 w-5 h-5 z-50' />
+            <TimeIcon className='absolute top-9.25 right-2.5 text-gray-400 w-5 h-5 z-50' />
         </div>
     )
 }

@@ -45,7 +45,7 @@ const Wysiwyg = ({fieldTitle, initialValue, updateValue, hasError}) => {
     }
 
     return (
-        <div className={`relative border rounded-[8px] ${hasError ? 'border-red-500' : 'border-transparent'}`}>
+        <div className={`relative border rounded-lg ${hasError ? 'border-red-500' : 'border-transparent'}`}>
             <label className={`block font-medium font-outfit mb-2 text-xs ${hasError? 'text-red-500' : 'text-black'}`}>{fieldTitle}</label>
             {/* <button onclick={modules.history.undo()}>UNDO</button> */}
             <div className="absolute top-0 left-0">

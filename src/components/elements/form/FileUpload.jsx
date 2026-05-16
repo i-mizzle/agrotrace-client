@@ -98,9 +98,9 @@ const FileUpload = ({hasError, returnFileDetails, fieldLabel, preAddedFile, preA
               {uploadedFile &&  (
                   fileExt === 'jpeg' || fileExt === 'png' || fileExt === 'jpg' 
                   ?
-                  <img alt="" className="h-[70px] ml-3 mb-3 shadow-lg border-2 border-white" src={uploadedFile} /> 
+                  <img alt="" className="h-17.5 ml-3 mb-3 shadow-lg border-2 border-white" src={uploadedFile} /> 
                   :
-                  <div className='h-[75px] mb-3 w-[70px] ml-3 flex items-center justify-center border-2 border-white shadow-lg'>
+                  <div className='h-18.75 mb-3 w-17.5 ml-3 flex items-center justify-center border-2 border-white shadow-lg'>
                       <p className='text-sm font-tomato font-medium text-black'>.{fileExt}</p>
                   </div>
               )}
@@ -109,14 +109,14 @@ const FileUpload = ({hasError, returnFileDetails, fieldLabel, preAddedFile, preA
                   ?
                   <>
                     <a href={preAddedFile} target="_blank" rel="noreferrer">
-                      <img alt="" className="h-[70px]" src={preAddedFile} /> 
+                      <img alt="" className="h-17.5" src={preAddedFile} /> 
                     </a>
                     <p className="text-xs px-0 mt-3 lg:px-4 text-black w-full">
                       File name: <span className='font-medium'>{preAddedFileName.split('/').pop()}</span>
                     </p> 
                   </>
                   :
-                  <a href={preAddedFile} target="_blank" className='h-[75px] w-[70px] border-l-2 border-t-2 border-b-2 border-black flex items-center justify-center' rel="noreferrer">
+                  <a href={preAddedFile} target="_blank" className='h-18.75 w-17.5 border-l-2 border-t-2 border-b-2 border-black flex items-center justify-center' rel="noreferrer">
                       <p className='text-sm font-tomato font-medium text-black'>.{preAddedFileName.split('.').pop()}</p>
                   </a>
               )}

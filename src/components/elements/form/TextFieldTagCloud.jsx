@@ -85,7 +85,7 @@ const TextFieldTagCloud = ({
 
             <div className='flex flex-wrap gap-3'>
                 {tags.map((tag, tagIndex)=>(
-                    <span key={tagIndex} className='inline flex items-center gap-x-2 px-3 py-1 h-6 bg-gray-100 text-sm text-black w-max font-thin'>
+                    <span key={tagIndex} className='flex items-center gap-x-2 px-3 py-1 h-6 bg-gray-100 text-sm text-black w-max font-thin'>
                         {tag}
                         <button className='' onClick={()=>{removeTag(tag)}}>
                             <CloseIcon className={`w-4`} />
@@ -97,7 +97,7 @@ const TextFieldTagCloud = ({
                         id={fieldId} 
                         type="text" 
                         maxLength={maxLength}
-                        className={`z-30 border-transparent bg-transparent outline-none min-w-[50px] w-inherit inline`} 
+                        className={`z-30 border-transparent bg-transparent outline-none min-w-12.5 w-inherit inline`} 
                         onFocus={()=>{setIsFocused(true)}} 
                         onChange={(e)=>{setValue(e.target.value)}}
                         value={fieldValue}
