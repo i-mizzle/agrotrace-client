@@ -22,7 +22,7 @@ const TextField = ({
         <div>
             <label 
                 className={`text-sm lg:text-md cursor-text z-10 relative py-1 transition mb-1 block duration-200  
-                ${hasError ? 'text-red-600' : 'text-gray-500'}`}
+                ${hasError ? 'text-red-600' : 'text-gray-500 dark:text-gray-300'}`}
             >
              {requiredField && requiredField === true && <span className='text-red-600'>*</span>}   {inputLabel}
             </label>
@@ -31,7 +31,7 @@ const TextField = ({
                 id={fieldId} 
                 type="text"
                 maxLength={maxLength}
-                className={`rounded py-3 px-3 text-sm block w-full focus:border-gray-800 focus:outline-none hover:border-gray-200 hover:bg-gray-50 border bg-gray-100 transition duration-200 focus:bg-white font-outfit placeholder:font-outfit  ${hasError ? 'border-red-600' : 'border-gray-100'}`} 
+                className={`rounded py-4 px-4 text-sm block w-full focus:border-gray-800 focus:outline-none hover:border-gray-200 dark:hover:border-at-dark-gray border bg-at-black/5 dark:bg-at-black/20 transition duration-200 focus:bg-white dark:focus:bg-at-black/60 font-outfit placeholder:font-outfit  ${hasError ? 'border-red-600' : 'border-transparent'}`}
                 onChange={(e)=>{setValue(e.target.value)}}
                 value={fieldValue}
                 disabled={disabled}

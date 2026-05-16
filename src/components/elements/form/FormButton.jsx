@@ -1,9 +1,9 @@
 import React from 'react'
-import InlinePreloader from '../InlinePreloader'
+// import InlinePreloader from '../InlinePreloader'
 
 const FormButton = ({buttonLabel, buttonAction, processing}) => {
   return (
-    <button type='submit' disabled={processing} onClick={()=>{buttonAction()}} className='w-full px-[16px] py-[12px] rounded-[8px] bg-[#040f16] text-white border border-[#040f16] text-md transition duration-200 hover:bg-gray-200 hover:text-black text-sm flex items-center justify-center cursor-pointer'>{processing ? <InlinePreloader /> : buttonLabel }</button>
+    <button type='submit' disabled={processing} onClick={()=>{buttonAction()}} className='w-full p-4 rounded bg-accent shadow-xl shadow-accent/10 text-white dark:text-at-black border border-accent text-md font-semibold transition duration-200 hover:bg-at-black dark:hover:bg-at-dark-gray dark:hover:text-black  flex items-center justify-center cursor-pointer active:shadow-non'>{processing ? <div className='btn-loader' /> : buttonLabel }</button>
   )
 }
 

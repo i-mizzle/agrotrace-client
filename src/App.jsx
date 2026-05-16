@@ -14,6 +14,7 @@ import PasswordResetRequest from './components/pages/auth/PasswordResetRequest'
 import PasswordReset from './components/pages/auth/PasswordReset'
 import Dashboard from './components/pages/user/producer/Dashboard'
 import ProducerErrorPage from './components/pages/user/producer/ProducerErrorPage'
+import Signup from './components/pages/onboarding/Signup'
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/password-reset" element={<PasswordResetRequest />} />
             <Route path="/password-reset/:resetCode" element={<PasswordReset />} />
+
+            <Route path="/signup" element={<Signup />} />
+
             
             <Route path="/producer" element={<Producer />}>
               <Route index element={<Navigate replace to="dashboard" />} />
