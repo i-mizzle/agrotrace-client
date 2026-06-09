@@ -28,13 +28,20 @@ const NumberField = ({
 
     return (
         <div>
-            {inputLabel && inputLabel !== '' && <label 
-                className={`text-sm lg:text-md cursor-text z-10 relative py-1 transition mb-2 block duration-200  
-                ${hasError ? 'text-red-600' : 'text-gray-500'}`}
-            >
-                {requiredField && requiredField === true && <span className='text-red-600'>*</span>} {inputLabel}
-            </label>}
-
+            <div className="flex items-center justify-between">
+                <label 
+                    className={`text-sm lg:text-md cursor-text z-10 relative py-1 transition mb-1 block duration-200  
+                    ${hasError ? 'text-red-400' : 'text-gray-500 dark:text-gray-300'}`}
+                >
+                    {inputLabel} {requiredField && requiredField === true && <span className='text-red-400'>*</span>}
+                </label>
+                <label 
+                    className={`text-xs text-red-400`}
+                >
+                    {hasError}
+                </label>
+            </div>
+            
             <NumericFormat
                 id={fieldId}
                 thousandsGroupStyle="thousand"

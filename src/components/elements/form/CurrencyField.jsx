@@ -46,14 +46,19 @@ const CurrencyField = ({
             onClick={()=>{focusField()}} 
             onBlur={()=>{setIsFocused(false)}}
         >
-            <label 
-                className={`text-sm lg:text-md cursor-text z-10 absolute top-3 left-4 px-3 py-1 transition duration-200  
-                ${isFocused || fieldValue !== '' ? '-translate-y-8 bg-white' : 'translate-y-0 bg-gray-100'}
-                ${bgClass && bgClass !== '' ? bgClass : 'bg-white'}  
-                ${hasError ? 'text-red-600' : 'text-gray-500'}`}
-            >
-                {inputLabel}
-            </label>
+            <div className="flex items-center justify-between">
+                <label 
+                    className={`text-sm lg:text-md cursor-text z-10 relative py-1 transition mb-1 block duration-200  
+                    ${hasError ? 'text-red-400' : 'text-gray-500 dark:text-gray-300'}`}
+                >
+                    {inputLabel} {requiredField && requiredField === true && <span className='text-red-400'>*</span>}
+                </label>
+                <label 
+                    className={`text-xs text-red-400`}
+                >
+                    {hasError}
+                </label>
+            </div>
 
             <NumericFormat
                 id={fieldId}

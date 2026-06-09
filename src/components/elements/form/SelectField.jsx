@@ -74,12 +74,19 @@ const SelectField = ({
   return (
     <div ref={wrapperRef} className="relative w-full">
       <div>
-        <label
-          className={`text-sm lg:text-md cursor-text bg-white z-30 relative block py-1 transition duration-200 mb-1 
-                ${hasError ? 'text-red-600' : 'text-gray-500'}`}>
-          {requiredField && requiredField === true && <span className="text-red-600">*</span>}
-          {inputLabel}
-        </label>
+        <div className="flex items-center justify-between">
+          <label 
+            className={`text-sm lg:text-md cursor-text z-10 relative py-1 transition mb-1 block duration-200  
+            ${hasError ? 'text-red-400' : 'text-gray-500 dark:text-gray-300'}`}
+          >
+            {inputLabel} {requiredField && requiredField === true && <span className='text-red-400'>*</span>}
+          </label>
+          <label 
+            className={`text-xs text-red-400`}
+          >
+            {hasError}
+          </label>
+        </div>
 
         <select
           className={`rounded py-3 px-3 text-sm block w-full focus:border-gray-800 focus:outline-none hover:border-gray-200 hover:bg-gray-50 border bg-gray-100  transition duration-200 focus:bg-white font-outfit placeholder:font-outfit  ${hasError ? 'border-red-600' : 'border-gray-100'}`}

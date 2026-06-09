@@ -96,12 +96,19 @@ const AutocompleteSelect = ({
         // <div className='w-full relative'>
         <div  ref={wrapperRef} className='relative w-full'>
             <div>
-                <label 
-                    className={`text-sm lg:text-md cursor-text z-10 relative py-1 transition mb-1 block duration-200  
-                    ${hasError ? 'text-red-400' : 'text-gray-500 dark:text-gray-300'}`}
-                >
-                    {inputLabel} {requiredField && requiredField === true && <span className='text-red-400'>*</span>}
-                </label>
+                <div className="flex items-center justify-between">
+                    <label 
+                        className={`text-sm lg:text-md cursor-text z-10 relative py-1 transition mb-1 block duration-200  
+                        ${hasError ? 'text-red-400' : 'text-gray-500 dark:text-gray-300'}`}
+                    >
+                        {inputLabel} {requiredField && requiredField === true && <span className='text-red-400'>*</span>}
+                    </label>
+                    <label 
+                        className={`text-xs text-red-400`}
+                    >
+                        {hasError}
+                    </label>
+                </div>
                 
                 {/* Text input */}
                 <input 
@@ -142,7 +149,7 @@ const AutocompleteSelect = ({
                                     if(conditionalItemStyling && option[conditionalItemStyling.conditionTriggerKey] === true) {
                                         fireConditionalAction(option)
                                     } else {
-                                        changeActiveValue(titleField !== '' ? option[titleField] : option, option)}
+                                        changeActiveValue(titleField && titleField !== '' ? option[titleField] : option, option)}
                                     }
                                 }
                             >
@@ -161,7 +168,7 @@ const AutocompleteSelect = ({
 
                                 
                                 <div className='w-full'>
-                                    <span className='dark:text-at-white block font-space-grotesk'>{titleField !== '' ? option[titleField] : option}</span>
+                                    <span className='dark:text-at-white block font-space-grotesk'>{titleField && titleField !== '' ? option[titleField] : option}</span>
                                     {option.description && <span className='text-xs dark:text-at-white/70'>{option.description}</span>}
                                 </div>
                                 

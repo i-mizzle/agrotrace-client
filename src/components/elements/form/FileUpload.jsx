@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { ERROR } from '../../../store/types';
 import UploadIcon from '../icons/UploadIcon';
 
-const FileUpload = ({hasError, returnFileDetails, fieldLabel, preAddedFile, preAddedFileName, acceptedFormats, maxFileSize}) => {
+const FileUpload = ({hasError, returnFileDetails, fieldLabel, requiredField, preAddedFile, preAddedFileName, acceptedFormats, maxFileSize}) => {
   // const [file, setFile] = useState(null)
   const [fileName, setFileName] = useState(null)
   const [fileExt, setFileExt] = useState(null)
@@ -48,10 +48,19 @@ const FileUpload = ({hasError, returnFileDetails, fieldLabel, preAddedFile, preA
   }
   return (
     <div className='relative'>
-      <label 
-        className={`${hasError && hasError===true ? 'text-red-400' : 'text-gray-500'} text-sm lg:text-md cursor-text bg-transparent relative transition duration-200`}>
-            {fieldLabel}
-      </label>
+      <div className="flex items-center justify-between">
+          <label 
+              className={`text-sm lg:text-md cursor-text z-10 relative py-1 transition mb-1 block duration-200  
+              ${hasError ? 'text-red-400' : 'text-gray-500 dark:text-gray-300'}`}
+          >
+              {fieldLabel} {requiredField && requiredField === true && <span className='text-red-400'>*</span>}
+          </label>
+          <label 
+              className={`text-xs text-red-400`}
+          >
+              {hasError}
+          </label>
+      </div>
       <div className={`${hasError && hasError===true ? 'border-red-400' : 'border-gray-400'}  border-dashed my-4 rounded block border bg-transparent items-center relative w-full p-5`}>
 
           <FileUploader

@@ -1,53 +1,110 @@
 import countryStates  from '../assets/static/country-states.json'
+import { StatesLgas } from '../assets/static/stateslgas';
 
 export const baseUrl = import.meta.env.VITE_API_URL;
 
 export const accountTypes = [
     {
         label: 'Producer',
-        value:'regular',
+        value:'producer',
         description: 'You own a farm that produces crops, livestock, or both, and you need this account to record farm activities.'
     },
-    {
-        label: 'Regulator',
-        value:'regulator',
-        description: 'You work for an agricultural regulatory agency and use this account to carry out regulatory duties.'
-    },
-    {
-        label: 'Inspector',
-        value:'inspector',
-        description: 'You work for an inspection agency and use this account to carry out inspections.'
-    },
+    // {
+    //     label: 'Regulator',
+    //     value:'regulator',
+    //     description: 'You work for an agricultural regulatory agency and use this account to carry out regulatory duties.'
+    // },
+    // {
+    //     label: 'Inspector',
+    //     value:'inspector',
+    //     description: 'You work for an inspection agency and use this account to carry out inspections.'
+    // },
     {
         label: 'Exporter',
         value:'exporter',
-        description: 'You export agricultural produce and need this account to verify the traceability history of goods purchased for export.'
-    },
-]
-// 'exporter', 'producer', 'inspector', 'regulator',
+        description: 'You export produce and need to manage traceability, compliance, inspections, and export shipments.'
 
-export const eventVenueTypes = [
-    {
-        label: 'Onsite',
-        value:'onsite'
-    },
-    {
-        label: 'Online',
-        value:'online'
     },
 ]
 
-export const pageDisplayAreas = [
+export const producerTypes = [
     {
-        label: 'Header',
-        value: 'header'
+        label: 'Farmer',
+        value: 'farmer',
+        description:
+        'You cultivate crops, rear livestock, or manage mixed farming operations.'
     },
     {
-        label: 'Footer',
-        value: 'footer'
+        label: 'Rancher',
+        value: 'rancher',
+        description:
+        'You manage livestock operations such as cattle, goats, sheep, poultry, or other animal production systems.'
+    },
+    {
+        label: 'Co-operative',
+        value: 'cooperative',
+        description:
+        'You represent a farmers\' cooperative, association, or aggregation group that manages multiple producers, batches, or shared agricultural operations.'
+    },
+    {
+        label: 'Processor',
+        value: 'processor',
+        description:
+        'You transform raw agricultural produce into processed or packaged products.'
+    }
+]
+
+export const inspectorTypes = [
+    {
+        label: 'Veterinary Inspector',
+        value: 'veterinary-inspector',
+    },
+    {
+        label: 'Food Safety Inspector',
+        value: 'food-safety-inspector',
+    },
+    {
+        label: 'Export Compliance Officer',
+        value: 'export-compliance-officer',
+    },
+    {
+        label: 'Lab Inspector',
+        value: 'lab-inspector',
+    },
+    {
+        label: 'Quality Grader',
+        value: 'quality-grader',
+    },
+    {
+        label: 'Certification Agent',
+        value: 'certification-agent',
     },
 ]
 
+export const inspectorOrganizationTypes = [
+    {
+        label: 'Government',
+        value: 'government',
+    },
+    {
+        label: 'Private Lab',
+        value: 'private-lab',
+    },
+    {
+        label: 'Certification Body',
+        value: 'certification-body',
+    },
+    {
+        label: 'Export Authority',
+        value: 'export-authority',
+    },
+    {
+        label: 'Independent',
+        value: 'independent',
+    },
+]
+
+export const exportCommodities = [ "sesame", "cocoa", "cashew", "maize", "soybean", "ginger", "hibiscus", "shea_butter", "livestock", "poultry" ]
 
 export const convertCamelCase = (camelCaseText) => {
     const text = camelCaseText;
@@ -290,62 +347,6 @@ export const parseFilters = (filtersArray, action,  object) => {
 
 } 
 
-export const cardThemes = [
-    {
-        label: "#E9E5DF",
-        value: "ALW_THEME:#E9E5DF",
-    },
-    {
-        label: "#DFE2E9",
-        value: "ALW_THEME:#DFE2E9",
-    },
-    {
-        label: "#E9DFE3",
-        value: "ALW_THEME:#E9DFE3",
-    },
-    {
-        label: "#FBFCD4",
-        value: "ALW_THEME:#FBFCD4",
-    }
-]
-
-export const autoRenewOptions = [
-    {
-        label: "Day",
-        value: "daily",
-    },
-    {
-        label: "Week",
-        value: "weekly",
-    },
-    {
-        label: "Month",
-        value: "monthly",
-    }
-]
-
-export const useTypes = [
-    {
-        label: "Personal use by a team member",
-        value: "INDIVIDUAL",
-    },
-    {
-        label: "For a purpose by any team member",
-        value: "PURPOSE",
-    },
-]
-
-export const wipeOptions = [
-    {
-        label: "Wipe card balance at renewal",
-        value: true
-    },
-    {
-        label: "Keep card balance at renewal and add limit amount",
-        value: false
-    },
-]
-
 export const daysOfWeek = [
     {
         label: "Monday",
@@ -483,6 +484,7 @@ export const parseNigerianStates = () => {
     const statesArray = []
 
     for (const [key, value] of Object.entries(countryStates.NG.divisions)) {
+        // console.log('state key => ', key, ' state value => ', value)
         statesArray.push({
             label: value,
             value: key
@@ -490,6 +492,15 @@ export const parseNigerianStates = () => {
     }
 
     return statesArray
+}
+
+export const parseNigerianCities = (state) => {
+    console.log('state => ', state)
+    const selectedState = StatesLgas.find((item)=>{
+        return item.stateSlug === slugify(state)
+    })
+    console.log('selected state ==>', selectedState)
+    return selectedState ? selectedState.lgas : []
 }
 
 export const debounce = (func, timeout = 1000) => {

@@ -7,7 +7,7 @@ const InlinePreloader = () => {
     // </svg>
     <div className='flex items-center justify-center text-center'>
       <div className='text-center flex flex-col items-center'>
-        <div className='inline-loader' />
+        <div className='btn-loader' /> 
       </div>
     </div>
   )

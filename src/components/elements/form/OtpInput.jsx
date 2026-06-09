@@ -49,7 +49,7 @@ const OTPInput = ({ length, onChange, hasError, invalid }) => {
           key={index}
           type="text"
           maxLength="1"
-          // placeholder='*'
+          placeholder='*'
           ref={(el) => (inputsRef.current[index] = el)}
           onChange={(e) => handleChange(e, index)}
           onKeyDown={(e) => handleKeyDown(e, index)}
