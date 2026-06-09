@@ -3,13 +3,87 @@ import Logo from '../../elements/Logo'
 import FormButton from '../../elements/form/FormButton'
 import TextField from '../../elements/form/TextField'
 import PasswordField from '../../elements/form/PasswordField'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import UnderlineVector from '../../../assets/img/underline.svg'
+import axios from 'axios';
+import { ERROR } from '../../../store/types';
+import { baseUrl, validateEmail } from '../../../utils/utils';
 
 const Login = () => {
   const [validationErrors, setValidationErrors] = useState({})
+  const [processing, setProcessing] = useState(false)
   const [email, setEmail] = useState('')
-  const [Password, setPassword] = useState('')
+  const [password, setPassword] = useState('')
+
+  const navigate = useNavigate()
+
+  const validateForm = () => {
+    let errors = {}
+
+    if(!email || email === '') {
+      errors.email = "Email required"
+    }
+
+    if(email && !validateEmail(email)) {
+      errors.email = "Invalid email"
+    }
+
+    if(!password || password === '') {
+      errors.password = "Password required"
+    }
+    
+    setValidationErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
+  const logIn = async () => {
+    if(!validateForm()) {
+      return
+    }
+    try {
+      const payload = {
+        email,
+        password
+      }
+      setProcessing(true)
+      const response = await axios.post(`${baseUrl}/auth/sessions`, payload)
+      // navigate('/user')
+      fetchUserDetails(response.data.data.accessToken).then((userDetails) => {
+        localStorage.setItem('user', JSON.stringify(userDetails))
+        localStorage.setItem('token', response.data.data.accessToken)
+        if(userDetails.userType === 'producer') {
+          navigate('/producer')
+        }
+        if(userDetails.userType === 'exporter') {
+          navigate('/exporter')
+        }
+      })
+    } catch (error) {
+      console.log('log in error: ', error)
+      dispatch({
+        type: ERROR,
+        error 
+      })
+      setProcessing(false)
+    }
+  }
+
+  const fetchUserDetails = async (token) => {
+    try {
+      const headers = {
+        Authorization: `Bearer ${token}`
+      }
+      const response = await axios.get(`${baseUrl}/user/profile`, {headers})
+      return response.data.data
+    } catch (error) {
+      console.log('fetch user details error: ', error)
+      dispatch({
+        type: ERROR,
+        error 
+      })
+      setProcessing(false)
+    }
+  }
   return (
     <div className='w-full'>
       <Logo />
@@ -46,7 +120,7 @@ const Login = () => {
       <p className="my-3 text-sm text-opacity-70 block text-right">Forgot your password? <Link to="/password-reset" className="text-accent">Click here to reset it</Link></p>
 
       <div className='mt-5'>
-        <FormButton buttonAction={()=>{}} buttonLabel={`Login to your account`} processing={false} />
+        <FormButton buttonAction={logIn} buttonLabel={`Login to your account`} processing={processing} />
       </div>
 
       <div className='w-full text-center mt-8'>

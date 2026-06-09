@@ -33,7 +33,15 @@ function App() {
             
             <Route path="/producer" element={<Producer />}>
               <Route index element={<Navigate replace to="dashboard" />} />
-              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="/producer/dashboard" element={<Dashboard />} />
+
+              {/* <Route path="*" element={<AdminErrorPage />} /> */}
+              <Route path="*" element={<ProducerErrorPage />} />
+            </Route>
+
+            <Route path="/exporter" element={<Producer />}>
+              <Route index element={<Navigate replace to="dashboard" />} />
+              <Route path="/exporter/dashboard" element={<Dashboard />} />
 
               {/* <Route path="*" element={<AdminErrorPage />} /> */}
               <Route path="*" element={<ProducerErrorPage />} />
