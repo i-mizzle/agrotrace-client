@@ -88,6 +88,10 @@ const Signup = () => {
       errors.userType = "Please select an option"
     }
 
+    if(!userDetails.gender || userDetails.gender === '') {
+      errors.gender = "Please select your gender"
+    }
+
     if(!userDetails.password || userDetails.password === '') {
       errors.password = "Password required"
     }
@@ -354,6 +358,25 @@ const Signup = () => {
               hasError={validationErrors && validationErrors.phone} 
               returnFieldValue={(value)=>{setUserDetails({...userDetails, phone: value})}}
               requiredField={true}
+            />
+          </div>
+
+          <div className='mt-4'>
+            <RadioGroup 
+              items={[
+                {label: 'Female', value: 'female'},
+                {label: 'Male', value: 'male'},
+              ]} 
+              inputLabel={`Gender`} 
+              placeholderText={`Select your gender`}
+              displayImage={false} 
+              titleField={`label`} 
+              inline
+              hasError={validationErrors?.userType} 
+              returnSelected={(value)=>{setUserDetails({...userDetails, gender: value.value})}}
+              disabled={false}
+              requiredField={true}
+              disableAutocomplete={true}
             />
           </div>
 

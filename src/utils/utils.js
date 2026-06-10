@@ -304,7 +304,8 @@ export const organizationDetails = () => {
 }
 
 export const userDetails = () => {
-    const user = JSON.parse(localStorage.getItem('userDetails'));
+    const user = JSON.parse(localStorage.getItem('user'));
+    // console.log('---->', user)
     return user
 }
 

@@ -7,15 +7,15 @@ const SlideOutModal = ({children, isOpen, closeFunction, title, subTitle}) => {
         {isOpen && <div className={`h-screen overflow-y-scroll w-full bg-[#00000020] fixed left-0 top-0 transform transition-all duration-200 border-black`} style={{zIndex: 995}}>
 
         </div>}
-        <div className={`h-screen overflow-y-scroll scrollbar-hidden w-full md:w-[400px] lg:w-[500px] xl:w-[550px] bg-white fixed right-0 top-0 transform transition-all duration-200  border-black shadow-lg shadow-black/10 ${ isOpen ? 'translate-x-0' : 'translate-x-full' }`} style={{zIndex: 999}}>
-            <button className='absolute top-3 right-3 text-black p-[5px] rounded hover:text-gray-600 transition duration-200 hover:bg-gray-100' onClick={()=>{closeFunction()}} style={{zIndex: '997'}}>
-                <CloseIcon className="w-5 h-5 text-black" />
+        <div className={`h-screen overflow-y-scroll scrollbar-hidden w-full md:w-100 lg:w-125 xl:w-137.5 bg-at-white dark:bg-at-black fixed right-0 top-0 transform transition-all duration-200  border-black shadow-lg shadow-black/10 ${ isOpen ? 'translate-x-0' : 'translate-x-full' }`} style={{zIndex: 999}}>
+            <button className='absolute top-5 right-3 text-black p-1.25 bg-white dark:bg-at-dark-gray/20 shadow-lg shadow-black/5 rounded hover:text-gray-600 transition duration-200 hover:bg-gray-100' onClick={()=>{closeFunction()}} style={{zIndex: '997'}}>
+                <CloseIcon className="w-5 h-5 text-gray-400" />
             </button>
 
-            <div className='py-3 w-full border-b border-gray-200 px-8 pt-4'>
+            {title || subTitle && <div className='py-3 w-full border-b border-gray-200 dark:border-at-dark-gray/30 px-8 pt-4'>
                 <h3 className='text-md font-[550]'>{title}</h3>
                 <p className='text-sm'>{subTitle}</p>
-            </div>
+            </div>}
 
             <div className='px-8'>
               {children}

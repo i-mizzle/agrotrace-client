@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Logo from '../../components/elements/Logo'
 import FormButton from '../../components/elements/form/FormButton'
 import TextField from '../../components/elements/form/TextField'
@@ -10,6 +10,16 @@ import { ERROR } from '../../store/types';
 import { baseUrl, validateEmail } from '../../utils/utils';
 
 const Login = () => {
+  // useEffect(() => {
+  //   localStorage.removeItem('user')
+  //   localStorage.removeItem('token')
+  //   localStorage.removeItem('refreshToken')  
+  
+  //   return () => {
+      
+  //   }
+  // }, [])
+  
   const [validationErrors, setValidationErrors] = useState({})
   const [processing, setProcessing] = useState(false)
   const [email, setEmail] = useState('')
@@ -51,12 +61,16 @@ const Login = () => {
       fetchUserDetails(response.data.data.accessToken).then((userDetails) => {
         localStorage.setItem('user', JSON.stringify(userDetails))
         localStorage.setItem('token', response.data.data.accessToken)
+        localStorage.setItem('refreshToken', response.data.data.refreshToken)
+
         if(userDetails.userType === 'producer') {
           navigate('/producer')
         }
+        
         if(userDetails.userType === 'exporter') {
           navigate('/exporter')
         }
+
       })
     } catch (error) {
       console.log('log in error: ', error)
