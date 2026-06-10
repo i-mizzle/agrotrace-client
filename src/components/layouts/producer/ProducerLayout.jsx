@@ -4,10 +4,14 @@ import ProducerHeader from '../../partials/producer/ProducerHeader';
 
 const ProducerLayout = ({children}) => {
   return (
-    <div>
+    <div className="relative">
       <ProducerHeader />
-      {children}
-      <ProducerNav />
+      <div className="py-5">
+        {children}
+      </div>
+      <div className="fixed bottom-4 w-full left-0">
+        <ProducerNav />
+      </div>
     </div>
   )
 }

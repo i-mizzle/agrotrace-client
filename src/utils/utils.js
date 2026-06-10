@@ -298,9 +298,9 @@ export const userPermissions = () => {
     return userPermissions
 }
 
-export const businessDetails = () => {
-    const business = JSON.parse(localStorage.getItem('business'));
-    return business
+export const organizationDetails = () => {
+    const organization = JSON.parse(localStorage.getItem('organizationDetails'));
+    return organization
 }
 
 export const userDetails = () => {
