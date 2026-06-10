@@ -1,21 +1,21 @@
 import React, { act, useState } from 'react'
-import Logo from '../../elements/Logo'
-import TextField from '../../elements/form/TextField'
-import PasswordField from '../../elements/form/PasswordField'
+import TextField from '../../components/elements/form/TextField'
+import PasswordField from '../../components/elements/form/PasswordField'
 import { Link, useNavigate } from 'react-router-dom'
-import FormButton from '../../elements/form/FormButton'
-import AutocompleteSelect from '../../elements/form/AutocompleteSelect'
-import { accountTypes, authHeader, baseUrl, exportCommodities, inspectorOrganizationTypes, inspectorTypes, parseNigerianCities, parseNigerianStates, producerTypes, validateEmail, validatePhoneNumber } from '../../../utils/utils'
-import OTPInput from '../../elements/form/OtpInput'
-import Countdown from '../../elements/Countdown'
-import Mailbox from '../../../assets/img/mailbox.svg'
-import RadioGroup from '../../elements/form/RadioGroup'
-import { Nationalities } from '../../../assets/static/nationalities'
+import FormButton from '../../components/elements/form/FormButton'
+import AutocompleteSelect from '../../components/elements/form/AutocompleteSelect'
+import { accountTypes, authHeader, baseUrl, exportCommodities, inspectorOrganizationTypes, inspectorTypes, parseNigerianCities, parseNigerianStates, producerTypes, validateEmail, validatePhoneNumber } from '../../utils/utils'
+import OTPInput from '../../components/elements/form/OtpInput'
+import Countdown from '../../components/elements/Countdown'
+import Mailbox from '../../assets/img/mailbox.svg'
+import RadioGroup from '../../components/elements/form/RadioGroup'
+import { Nationalities } from '../../assets/static/nationalities'
 import { useDispatch } from 'react-redux'
-import { ERROR, SET_SUCCESS } from '../../../store/types'
+import { ERROR, SET_SUCCESS } from '../../store/types'
 import axios from 'axios'
-import PhoneNumberField from '../../elements/form/PhoneNumberField';
-import InlinePreloader from '../../elements/InlinePreloader';
+import PhoneNumberField from '../../components/elements/form/PhoneNumberField';
+import InlinePreloader from '../../components/elements/InlinePreloader';
+import Logo from '../../components/elements/Logo';
 
 const Signup = () => {
   const [validationErrors, setValidationErrors] = useState({})

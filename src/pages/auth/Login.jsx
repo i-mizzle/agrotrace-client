@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import Logo from '../../elements/Logo'
-import FormButton from '../../elements/form/FormButton'
-import TextField from '../../elements/form/TextField'
-import PasswordField from '../../elements/form/PasswordField'
+import Logo from '../../components/elements/Logo'
+import FormButton from '../../components/elements/form/FormButton'
+import TextField from '../../components/elements/form/TextField'
+import PasswordField from '../../components/elements/form/PasswordField'
 import { Link, useNavigate } from 'react-router-dom'
-import UnderlineVector from '../../../assets/img/underline.svg'
+import UnderlineVector from '../../assets/img/underline.svg'
 import axios from 'axios';
-import { ERROR } from '../../../store/types';
-import { baseUrl, validateEmail } from '../../../utils/utils';
+import { ERROR } from '../../store/types';
+import { baseUrl, validateEmail } from '../../utils/utils';
 
 const Login = () => {
   const [validationErrors, setValidationErrors] = useState({})
