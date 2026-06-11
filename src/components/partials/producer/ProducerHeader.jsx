@@ -9,6 +9,7 @@ import SquaresStackIcon from '../../elements/icons/SquaresStackIcon';
 import LogoutIcon from '../../elements/icons/LogoutIcon';
 import CogIcon from '../../elements/icons/CogIcon';
 import BoxIcon from '../../elements/icons/BoxIcon';
+import ExclamationTriangleIcon from '../../elements/icons/ExclamationTriangleIcon';
 
 const ProducerHeader = () => {
   const user = userDetails()
@@ -55,9 +56,15 @@ const ProducerHeader = () => {
             <BoxIcon className={`w-5 h-5 text-at-dark-gray dark:text-accent`} />
             Products
           </button>
+
           <button className="text-sm font-medium w-full py-4 px-4 rounded-lg bg-white dark:bg-at-dark-gray/5 shadow-xl shadow-black/5 flex items-center gap-x-3 mb-4">          
             <SquaresStackIcon className={`w-5 h-5 text-at-dark-gray dark:text-accent`} />
             Batches
+          </button>
+                    
+          <button className="text-sm font-medium w-full py-4 px-4 rounded-lg bg-white dark:bg-at-dark-gray/5 shadow-xl shadow-black/5 flex items-center gap-x-3 mb-4">          
+            <ExclamationTriangleIcon className={`w-5 h-5 text-at-dark-gray dark:text-accent`} />
+            Risk Alerts
           </button>
 
           <button className="text-sm font-medium w-full py-4 px-4 rounded-lg bg-white dark:bg-at-dark-gray/5 shadow-xl shadow-black/5 flex items-center gap-x-3 mb-4">          

@@ -49,14 +49,16 @@ const ModalDialog = ({
             <div
               className={`inline-block w-full ${maxWidthClass || ''} p-4 my-8 overflow-hidden text-left align-middle transition-all transform bg-at-white dark:bg-black shadow-xl rounded-xl border border-at-dark-gray/20`}
             > 
-              <div className='w-full flex items-start justify-between gap-x-2.5'>
+              <div className='w-full flex items-start justify-between gap-x-2.5 relative'>
                 <DialogTitle
                   as="h3"
                   className="text-md font-medium leading-6 mb-2 w-full"
                 >
                   {dialogTitle}
                 </DialogTitle>
-                <button className='text-gray-400 hover:text-black transition duration-200' onClick={closeFunction}><CloseIcon className={`w-5 h-5`} /></button>
+                <button className='absolute top-0 right-1 text-black p-1.25 bg-white dark:bg-at-dark-gray/20 shadow-lg shadow-black/5 rounded hover:text-gray-600 transition duration-200 hover:bg-gray-100' onClick={()=>{closeFunction()}} style={{zIndex: '997'}}>
+                  <CloseIcon className="w-5 h-5 text-gray-400" />
+                </button>
               </div>
               <div className="mt-1">{children}</div>
             </div>
