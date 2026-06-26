@@ -42,6 +42,7 @@ h1, h2, h3, button {
   --color-at-white: #f7f7f9;
   --color-at-black: #020402;
   --color-at-dark-gray: #476a6f;
+  --color-at-dark-surface: #050907;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -211,6 +212,20 @@ div.ql-toolbar.ql-snow {
 }
 .bar-gradient:hover {
   background: linear-gradient(182deg, #dec8ff90.4%, rgba(253, 239, 255, 0.44)98.65%), #FFF;
+}
+
+/* Keep Leaflet UI under dashboard headers and modal layers. */
+.leaflet-container {
+  z-index: 0;
+}
+
+.leaflet-pane {
+  z-index: 100;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 200;
 }
 
 

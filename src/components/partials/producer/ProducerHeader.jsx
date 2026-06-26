@@ -10,6 +10,7 @@ import LogoutIcon from '../../elements/icons/LogoutIcon';
 import CogIcon from '../../elements/icons/CogIcon';
 import BoxIcon from '../../elements/icons/BoxIcon';
 import ExclamationTriangleIcon from '../../elements/icons/ExclamationTriangleIcon';
+import { Link } from 'react-router-dom';
 
 const ProducerHeader = () => {
   const user = userDetails()
@@ -18,7 +19,7 @@ const ProducerHeader = () => {
   const [fullNavOpen, setFullNavOpen] = useState(false)
   return (
     <>
-      <header className="w-full sticky top-2 bg-at-white dark:bg-at-black">
+      <header className="w-full sticky pt-2 top-0 bg-at-white dark:bg-at-black backdrop-blur-2xl z-999">
         <div className="flex items-center justify-between py-2">
           <div className="flex items-center gap-x-2">
             
@@ -52,15 +53,15 @@ const ProducerHeader = () => {
         closeFunction={() => setFullNavOpen(false)} 
       >
         <div className="w-full py-20">
-          <button className="text-sm font-medium w-full py-4 px-4 rounded-lg bg-white dark:bg-at-dark-gray/5 shadow-xl shadow-black/5 flex items-center gap-x-3 mb-4">          
+          <Link to="/producer/products" onClick={()=>{setFullNavOpen(false)}} className="text-sm font-medium w-full py-4 px-4 rounded-lg bg-white dark:bg-at-dark-gray/5 shadow-xl shadow-black/5 flex items-center gap-x-3 mb-4">          
             <BoxIcon className={`w-5 h-5 text-at-dark-gray dark:text-accent`} />
             Products
-          </button>
+          </Link>
 
-          <button className="text-sm font-medium w-full py-4 px-4 rounded-lg bg-white dark:bg-at-dark-gray/5 shadow-xl shadow-black/5 flex items-center gap-x-3 mb-4">          
+          <Link to="/producer/batches" onClick={()=>{setFullNavOpen(false)}} className="text-sm font-medium w-full py-4 px-4 rounded-lg bg-white dark:bg-at-dark-gray/5 shadow-xl shadow-black/5 flex items-center gap-x-3 mb-4">          
             <SquaresStackIcon className={`w-5 h-5 text-at-dark-gray dark:text-accent`} />
             Batches
-          </button>
+          </Link>
                     
           <button className="text-sm font-medium w-full py-4 px-4 rounded-lg bg-white dark:bg-at-dark-gray/5 shadow-xl shadow-black/5 flex items-center gap-x-3 mb-4">          
             <ExclamationTriangleIcon className={`w-5 h-5 text-at-dark-gray dark:text-accent`} />

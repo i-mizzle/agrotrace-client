@@ -23,6 +23,13 @@ import AssetDetails from './pages/user/producer/assets/AssetDetails';
 import NewAsset from './pages/user/producer/assets/NewAsset';
 import Events from './pages/user/producer/events/Events';
 import EventDetails from './pages/user/producer/events/EventDetails';
+import NewEvent from './pages/user/producer/events/NewEvent';
+import Batches from './pages/user/producer/batches/Batches';
+import Batch from './pages/user/producer/batches/Batch';
+import NewBatch from './pages/user/producer/batches/NewBatch';
+import Products from './pages/user/producer/products/Products';
+import ProductDetails from './pages/user/producer/products/ProductDetails';
+import NewProduct from './pages/user/producer/products/NewProduct';
 
 function App() {
   return (
@@ -52,7 +59,18 @@ function App() {
               <Route path="/producer/assets/new-asset" element={<NewAsset />} />
 
               <Route path="/producer/events" element={<Events />} />
+              <Route path="/producer/events/:eventId" element={<EventDetails />} />
               <Route path="/producer/events/event/:eventId" element={<EventDetails />} />
+              <Route path="/producer/events/new-event" element={<NewEvent />} />
+
+              <Route path="/producer/batches" element={<Batches />} />
+              <Route path="/producer/batches/:batchId" element={<Batch />} />
+              <Route path="/producer/batches/batch/:batchId" element={<Batch />} />
+              <Route path="/producer/batches/new-batch" element={<NewBatch />} />
+
+              <Route path="/producer/products" element={<Products />} />
+              <Route path="/producer/products/product/:productId" element={<ProductDetails />} />
+              <Route path="/producer/products/new-product" element={<NewProduct />} />
               
               {/* <Route path="*" element={<AdminErrorPage />} /> */}
               <Route path="*" element={<ProducerErrorPage />} />
