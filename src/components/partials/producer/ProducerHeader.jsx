@@ -3,20 +3,49 @@ import BellIcon from '../../elements/icons/BellIcon';
 import AvatarMale from '../../../assets/img/placeholder-avatar-male.jpg'
 import AvatarFemale from '../../../assets/img/placeholder-avatar-female.jpg'
 import DotsVertical from '../../elements/icons/DotsVertical';
-import { userDetails } from '../../../utils/utils';
+import { authHeader, baseUrl, userDetails } from '../../../utils/utils';
 import SlideOutModal from '../../layouts/SlideOutModal';
 import SquaresStackIcon from '../../elements/icons/SquaresStackIcon';
 import LogoutIcon from '../../elements/icons/LogoutIcon';
 import CogIcon from '../../elements/icons/CogIcon';
 import BoxIcon from '../../elements/icons/BoxIcon';
 import ExclamationTriangleIcon from '../../elements/icons/ExclamationTriangleIcon';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { ERROR } from '../../../store/types';
+import axios from 'axios';
 
 const ProducerHeader = () => {
   const user = userDetails()
   const Avatar = user.gender === 'male' ? AvatarMale : AvatarFemale;
 
   const [fullNavOpen, setFullNavOpen] = useState(false)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const logOut = async () => {
+    try{
+      const headers = authHeader()
+      await axios.delete(`${baseUrl}/auth/sessions`, {}, { headers })
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
+      navigate('/');
+    } catch (error) {
+      console.error('Error logging out:', error.response.data.errorCode);
+      if(error.response.data.errorCode === 'unauthorized' || error.response.data.errorCode === 'expired-token') {
+        localStorage.removeItem('user');
+        localStorage.removeItem('authToken');
+        navigate('/');
+      } else {
+        dispatch({
+          type: ERROR,
+          error
+        })
+      }
+    }
+  }
+
   return (
     <>
       <header className="w-full sticky pt-2 top-0 bg-at-white dark:bg-at-black backdrop-blur-2xl z-999">
@@ -73,7 +102,7 @@ const ProducerHeader = () => {
             Settings
           </button>
 
-          <button className="text-sm font-medium w-full py-4 px-4 rounded-lg bg-white dark:bg-transparent shadow-xl shadow-black/5 flex items-center gap-x-3 mb-4">          
+          <button onClick={logOut} className="text-sm font-medium w-full py-4 px-4 rounded-lg bg-white dark:bg-transparent shadow-xl shadow-black/5 flex items-center gap-x-3 mb-4">          
             <LogoutIcon className={`w-5 h-5  text-red-600 dark:text-red-400`} />
             Logout
           </button>

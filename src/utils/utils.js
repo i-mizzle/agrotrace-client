@@ -240,7 +240,7 @@ export const transactionTimeStamp = (rawTimeStamp) => {
 }
 
 export const authHeader = () => {
-    const authToken = JSON.parse(localStorage.getItem('authToken'));
+    const authToken = localStorage.getItem('token');
     if (authToken) {
       return { Authorization: 'Bearer ' + authToken };
     } else {

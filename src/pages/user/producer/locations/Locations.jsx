@@ -1,11 +1,14 @@
-import React, { useMemo, useState } from 'react'
-import { CircleMarker, MapContainer, Popup, TileLayer } from 'react-leaflet'
+import React, { useMemo, useState, useEffect } from 'react'
+import { CircleMarker, MapContainer, Popup, TileLayer, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { Link } from 'react-router-dom'
 import MapPinIcon from '../../../../components/elements/icons/MapPinIcon'
 import CalendarIcon from '../../../../components/elements/icons/CalendarIcon'
 import ArrowIcon from '../../../../components/elements/icons/ArrowIcon'
-import { placeholderLocations } from './locationMockData'
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchLocations } from '../../../../store/actions/locationsActions';
+import Loader from '../../../../components/elements/Loader';
+import EmptyState from '../../../../components/elements/EmptyState';
 
 const LocationCard = ({ location, isHighlighted = false, onSelect }) => {
   return (
@@ -57,26 +60,81 @@ const LocationCard = ({ location, isHighlighted = false, onSelect }) => {
 }
 
 const Locations = () => {
-  const [activeLocationId, setActiveLocationId] = useState(placeholderLocations[0].id)
+  const [activeLocationId, setActiveLocationId] = useState(null)
+
+  const locationsSelector = useSelector((state) => state.locations);
+  const dispatch = useDispatch();
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [filters, setFilters] = useState('');
+  const locations = locationsSelector?.locations?.locations || []
+
+  const locationsWithCoordinates = useMemo(
+    () => locations.filter((location) => Number.isFinite(Number(location.latitude)) && Number.isFinite(Number(location.longitude))),
+    [locations],
+  )
+
+  useEffect(() => {
+    dispatch(fetchLocations(filters, page, perPage));
+  }, [dispatch, filters, page, perPage]);
+
+  useEffect(() => {
+    if (!locations.length) {
+      setActiveLocationId(null)
+      return
+    }
+
+    const activeExists = locations.some((location) => location.id === activeLocationId)
+    if (!activeExists) {
+      setActiveLocationId(locations[0].id)
+    }
+  }, [activeLocationId, locations]);
 
   const activeLocation = useMemo(
-    () => placeholderLocations.find((location) => location.id === activeLocationId) || placeholderLocations[0],
-    [activeLocationId],
+    () => locations.find((location) => location.id === activeLocationId) || locations[0],
+    [activeLocationId, locations],
   )
 
   const mapCenter = useMemo(() => {
-    const sum = placeholderLocations.reduce(
+    if (!locationsWithCoordinates.length) {
+      return [9.082, 8.6753]
+    }
+
+    const sum = locationsWithCoordinates.reduce(
       (acc, location) => {
         return {
-          lat: acc.lat + location.latitude,
-          lng: acc.lng + location.longitude,
+          lat: acc.lat + Number(location.latitude),
+          lng: acc.lng + Number(location.longitude),
         }
       },
       { lat: 0, lng: 0 },
     )
 
-    return [sum.lat / placeholderLocations.length, sum.lng / placeholderLocations.length]
-  }, [])
+    return [sum.lat / locationsWithCoordinates.length, sum.lng / locationsWithCoordinates.length]
+  }, [locationsWithCoordinates])
+
+  const FitBounds = ({ points }) => {
+    const map = useMap();
+
+    useEffect(() => {
+      if (!map || !points || !points.length) return;
+
+      const latlngs = points.map(p => [Number(p.latitude), Number(p.longitude)]);
+
+      if (latlngs.length === 1) {
+        map.setView(latlngs[0], 12);
+        return;
+      }
+
+      try {
+        map.fitBounds(latlngs, { padding: [50, 50] });
+      } catch (e) {
+        // ignore
+      }
+    }, [map, points]);
+
+    return null;
+  }
 
   return (
     <div className="w-full space-y-4">
@@ -87,22 +145,24 @@ const Locations = () => {
             <h2 className="text-lg font-semibold font-space-grotesk">Locations Overview</h2>
           </div>
           <span className="px-2.5 py-1 rounded-full text-xs bg-accent/15 text-at-dark-gray dark:text-accent font-medium">
-            {placeholderLocations.length} Locations
+            {locationsSelector.locations.total} Locations
           </span>
         </div>
 
-        <div className="w-full h-[48vh] min-h-80 rounded-xl overflow-hidden border border-gray-200/60 dark:border-gray-700/40">
+        {!locationsSelector.loadingLocations && locations.length > 0 && locationsWithCoordinates.length > 0 && <div className="w-full h-[48vh] min-h-80 rounded-xl overflow-hidden border border-gray-200/60 dark:border-gray-700/40">
           <MapContainer center={mapCenter} zoom={9} scrollWheelZoom={false} className="w-full h-full">
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            {placeholderLocations.map((location) => {
-              const isActive = location.id === activeLocation.id
+            <FitBounds points={locationsWithCoordinates} />
+
+            {locationsWithCoordinates.map((location) => {
+              const isActive = location?.id === activeLocation?.id
               return (
                 <CircleMarker
-                  center={[location.latitude, location.longitude]}
+                  center={[Number(location.latitude), Number(location.longitude)]}
                   eventHandlers={{
                     click: () => setActiveLocationId(location.id),
                   }}
@@ -117,7 +177,7 @@ const Locations = () => {
                       <p className="font-semibold">{location.lga}, {location.state}</p>
                       <p className="text-xs mt-1">{location.addressDescription}</p>
                       <p className="text-xs mt-1">
-                        {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
+                        {Number(location.latitude).toFixed(4)}, {Number(location.longitude).toFixed(4)}
                       </p>
                     </div>
                   </Popup>
@@ -125,25 +185,33 @@ const Locations = () => {
               )
             })}
           </MapContainer>
-        </div>
+        </div>}
       </div>
 
-      <div className="">
-        {/* <div className="mb-3">
-          <p className="text-xs opacity-70">Placeholder Dataset</p>
-          <h3 className="text-lg font-semibold font-space-grotesk">Locations</h3>
-        </div> */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {placeholderLocations.map((location) => (
-            <LocationCard
-              isHighlighted={location.id === activeLocation.id}
-              key={location.id}
-              location={location}
-              onSelect={() => setActiveLocationId(location.id)}
-            />
-          ))}
-        </div>
-      </div>
+      {locationsSelector.loadingLocations 
+      ? 
+        <Loader />
+      :
+      locations.length < 1 
+        ?
+        <EmptyState emptyStateTitle="No Locations" emptyStateText="You currently have no locations available." /> 
+        :
+        <div className="">
+          {/* <div className="mb-3">
+            <p className="text-xs opacity-70">Placeholder Dataset</p>
+            <h3 className="text-lg font-semibold font-space-grotesk">Locations</h3>
+          </div> */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {locations.map((location) => (
+              <LocationCard
+                isHighlighted={location.id === activeLocation?.id}
+                key={location.id}
+                location={location}
+                onSelect={() => setActiveLocationId(location.id)}
+              />
+            ))}
+          </div>
+        </div>}
     </div>
   )
 }

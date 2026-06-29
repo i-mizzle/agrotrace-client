@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { CircleMarker, MapContainer, Popup, TileLayer } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { Link, Navigate, useParams } from 'react-router-dom'
@@ -6,9 +6,11 @@ import MapPinIcon from '../../../../components/elements/icons/MapPinIcon'
 import CalendarIcon from '../../../../components/elements/icons/CalendarIcon'
 import BoxIcon from '../../../../components/elements/icons/BoxIcon'
 import ArrowIcon from '../../../../components/elements/icons/ArrowIcon'
-import { locationAssets, locationEvents, placeholderLocations } from './locationMockData'
+import { locationAssets, locationEvents } from './locationMockData'
 import { statusColorMap } from '../assets/assetMockData'
 import { unSlugify } from '../../../../utils/utils'
+import { useDispatch } from 'react-redux';
+import { ERROR } from '../../../../store/types';
 
 const fallbackAssets = [
   { id: 'asset-001', name: 'Demonstration Crop Plot', type: 'crop', quantity: '2.0 ha', status: 'active' },
@@ -82,10 +84,40 @@ const EventCard = ({ event }) => {
 
 const LocationDetails = () => {
   const { locationId } = useParams()
-  const location = placeholderLocations.find((item) => item.id === locationId)
+  const dispatch = useDispatch()
+  const [location, setLocation] = useState(null)
+  const [loading, setLoading] = useState(true)
+  
+  useEffect(() => {
+    window.scrollTo(0, 0)
+
+    const fetchLocation = async () => {
+      try {
+        const headers = authHeader()
+
+        const response = await axios.get(`${baseUrl}/locations/${locationId}`, { headers })
+        setLocation(response.data.data)
+        setLoading(false)
+      } catch (error) {
+        console.error('Error fetching location details:', error.response.data)
+        dispatch({
+          type: ERROR,
+          error
+        })
+      }
+    }
+
+    fetchLocation()
+
+    return () => {
+     
+    }
+
+  }, [locationId])
+
 
   if (!location) {
-    return <Navigate replace to="/producer/locations" />
+    return <Navigate to="/producer/locations" replace />
   }
 
   const assets = locationAssets[location.id] || fallbackAssets

@@ -1,34 +1,35 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import CloseIcon from '../icons/CloseIcon'
 
 const TextFieldTagCloud = ({
     inputLabel, 
     fieldId, 
+    inputPlaceholder,
     hasError, 
     returnFieldValue, 
     preloadValue, 
     disabled, 
-    bgClass,
     autoFocus,
     maxLength,
-    maxTags
+    maxTags,
+    requiredField
 }) => {
+    const inputRef = useRef(null)
     const [ isFocused, setIsFocused ] = useState(false)
     const [ fieldValue, setFieldValue ] = useState('')
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const focusField = () => {
+    const focusField = useCallback(() => {
         setIsFocused(true)
-        document.getElementById(fieldId).focus()
-    }
+        if (inputRef.current) {
+            inputRef.current.focus()
+        }
+    }, [])
 
     useEffect(() => {
-    //   setFieldValue(preloadValue)
-        if (autoFocus && autoFocus === true) {
-            focusField()
+        if (autoFocus === true && inputRef.current) {
+            inputRef.current.focus()
         }
-    // eslint-disable-next-line no-use-before-define
-    }, [autoFocus, focusField])
+    }, [autoFocus])
 
     const setValue = (value) => {
         setFieldValue(value)
@@ -38,18 +39,29 @@ const TextFieldTagCloud = ({
     const [tags, setTags] = useState(preloadValue ? preloadValue : [])
 
     const addTag = (e) => {
-        e.preventDefault();
+        if(disabled){
+            return
+        }
+        if (e) {
+            e.preventDefault()
+        }
+
+        const newTag = fieldValue.trim()
+        if (!newTag) {
+            return
+        }
+
         if(tags.length === maxTags) {
             return
         }
 
-        if(tags.filter((item) => {return item === fieldValue}).length > 0) {
+        if(tags.includes(newTag)) {
             focusField()
             return
         }
         
         const tempTags = [...tags]
-        tempTags.push(fieldValue)
+        tempTags.push(newTag)
         setTags(tempTags)
 
         returnFieldValue(tempTags)
@@ -57,7 +69,35 @@ const TextFieldTagCloud = ({
         focusField()
     }
 
+    const handleKeyDown = (e) => {
+        if (disabled) {
+            return
+        }
+
+        if (e.key === 'Backspace' && !fieldValue) {
+            if (tags.length === 0) {
+                return
+            }
+
+            const tempTags = tags.slice(0, -1)
+            setTags(tempTags)
+            returnFieldValue(tempTags)
+            return
+        }
+
+        const delimiterKeys = ['Enter', 'Tab', ',']
+        if (delimiterKeys.includes(e.key)) {
+            if (!fieldValue.trim()) {
+                return
+            }
+            addTag(e)
+        }
+    }
+
     const removeTag = (toDelete) => {
+        if(disabled){
+            return
+        }
         const tempTags = [...tags]
         const removed = tempTags.filter((tag)=>{
             return tag !== toDelete
@@ -68,45 +108,55 @@ const TextFieldTagCloud = ({
 
 
     return (
-        <div 
-            className={`w-full cursor-text border rounded p-4 relative z-0 ${isFocused || fieldValue !== '' || tags.length > 0 ? 'border-black' : 'border-gray-400'} ${hasError && 'border-red-600'}`} 
-            onClick={()=>{focusField()}} 
-            onBlur={()=>{setIsFocused(false)}}
-        >
-            {/* {fieldValue} */}
-            <label 
-                className={`text-sm lg:text-md cursor-text z-10 absolute top-3 left-4 px-3 py-1 transition duration-200  
-                ${isFocused || fieldValue !== '' || tags.length > 0 ? '-translate-y-8' : 'translate-y-0'}
-                ${bgClass && bgClass !== '' ? bgClass : 'bg-white'}  
-                ${hasError ? 'text-red-600' : 'text-gray-500'}`}
-            >
-                {inputLabel}
-            </label>
-
-            <div className='flex flex-wrap gap-3'>
-                {tags.map((tag, tagIndex)=>(
-                    <span key={tagIndex} className='flex items-center gap-x-2 px-3 py-1 h-6 bg-gray-100 text-sm text-black w-max font-thin'>
-                        {tag}
-                        <button className='' onClick={()=>{removeTag(tag)}}>
-                            <CloseIcon className={`w-4`} />
-                        </button>
-                    </span>
-                ))}
-                <form onSubmit={(e)=>{addTag(e)}}>
-                    <input 
-                        id={fieldId} 
-                        type="text" 
-                        maxLength={maxLength}
-                        className={`z-30 border-transparent bg-transparent outline-none min-w-12.5 w-inherit inline`} 
-                        onFocus={()=>{setIsFocused(true)}} 
-                        onChange={(e)=>{setValue(e.target.value)}}
-                        value={fieldValue}
-                        disabled={disabled}
-                    />
-                </form>
+        <>
+            <div className="flex items-center justify-between">
+                <label 
+                    className={`text-sm lg:text-md cursor-text z-10 relative py-1 transition mb-1 block duration-200  
+                    ${hasError ? 'text-red-400' : 'text-gray-500 dark:text-gray-300'}`}
+                >
+                    {inputLabel} {requiredField && requiredField === true && <span className='text-red-400'>*</span>}
+                </label>
+                <label 
+                    className={`text-xs text-red-400`}
+                >
+                    {hasError}
+                </label>
             </div>
+            <div 
+                className={`rounded py-4 px-4 text-sm block w-full focus:border-gray-800 focus:outline-none hover:border-gray-200 dark:hover:border-at-dark-gray border bg-at-black/5 dark:bg-at-dark-gray/5 transition duration-200 focus:bg-white dark:focus:bg-at-black/60 font-outfit placeholder:font-outfit  ${hasError ? 'border-red-400' : 'border-transparent'}`}
+                onClick={()=>{focusField()}} 
+                onBlur={()=>{setIsFocused(false)}}
+            >
+                {/* {fieldValue} */}
 
-        </div>
+                <div className='flex flex-wrap gap-3'>
+                    {tags.map((tag, tagIndex)=>(
+                        <span key={tagIndex} className='flex items-center gap-x-3 px-2 py-2 rounded bg-gray-100 dark:bg-at-black text-xs text-black dark:text-white w-max font-medium'>
+                            {tag}
+                            {!disabled && <button className='' onClick={()=>{removeTag(tag)}}>
+                                <CloseIcon className={`w-4`} />
+                            </button>}
+                        </span>
+                    ))}
+                    {!disabled && <form onSubmit={(e)=>{addTag(e)}}>
+                        <input 
+                            id={fieldId} 
+                            ref={inputRef}
+                            type="text" 
+                            maxLength={maxLength}
+                            className={`z-30 border-transparent bg-transparent outline-none w-max w-inherit inline`} 
+                            onFocus={()=>{setIsFocused(true)}} 
+                            onChange={(e)=>{setValue(e.target.value)}}
+                            onKeyDown={handleKeyDown}
+                            placeholder={isFocused ? '' : inputPlaceholder}
+                            value={fieldValue}
+                            disabled={disabled}
+                        />
+                    </form>}
+                </div>
+
+            </div>
+        </>
     )
 }
 

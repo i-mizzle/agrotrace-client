@@ -48,7 +48,7 @@ const ProducerNav = () => {
           </Link>
 
           <div className="flex flex-col items-center justify-center">
-            <button className="w-15 h-14 bg-accent-dark -mt-8 dark:bg-accent text-xs flex flex-col items-center justify-center rounded-xl shadow-lg shadow-accent/15" onClick={() => handleCreateNewItem()}>
+            <button className="w-15 h-14 border-2 border-white dark:border-at-black bg-accent-dark -mt-8 dark:bg-accent text-xs flex flex-col items-center justify-center rounded-xl shadow-lg shadow-accent/15" onClick={() => handleCreateNewItem()}>
               <PlusIcon className="w-6 h-6 dark:text-at-black text-at-white" />
             </button>
             <p className="mt-2 text-xs font-semibold font-space-grotesk opacity-80">
@@ -81,7 +81,7 @@ const ProducerNav = () => {
         <div className="w-full p-1">
           <p className="text-sm mb-4">Please select an item to create</p>
 
-          <div className="w-full p-4 rounded-lg bg-white dark:bg-at-black shadow-xl shadow-black/5 flex items-center gap-x-2 justify-between mb-4">
+          <Link to="/producer/locations/new-location" onClick={() => setCreateModalOpen(false)} className="w-full p-4 rounded-lg bg-white dark:bg-at-black shadow-xl shadow-black/5 flex items-center gap-x-2 justify-between mb-4">
             <div className="w-10 flex items-center justify-center">
               <MapPinIcon className={`w-8 h-8 text-at-dark-gray dark:text-accent`} />
             </div>
@@ -89,9 +89,9 @@ const ProducerNav = () => {
               <h3 className="text-sm font-medium">Locations</h3>
               <p className="text-xs opacity-80 font-medium">Click to create a new location (farm) where you raise crops/livestock</p>
             </div>
-          </div>
+          </Link>
 
-          <div className="w-full p-4 rounded-lg bg-white dark:bg-at-black shadow-xl shadow-black/5 flex items-center gap-x-2 justify-between mb-4">
+          <Link to="/producer/assets/new-asset" onClick={() => setCreateModalOpen(false)} className="w-full p-4 rounded-lg bg-white dark:bg-at-black shadow-xl shadow-black/5 flex items-center gap-x-2 justify-between mb-4">
             <div className="w-10 flex items-center justify-center">
               <SquaresIcon className={`w-8 h-8 text-at-dark-gray dark:text-accent`} />
             </div>
@@ -99,7 +99,7 @@ const ProducerNav = () => {
               <h3 className="text-sm font-medium">Assets</h3>
               <p className="text-xs opacity-80 font-medium">Click to create a new asset (crop, animal or animal group) for your farm</p>
             </div>
-          </div>
+          </Link>
 
           <button
             className="w-full p-4 rounded-lg bg-white dark:bg-at-black shadow-xl shadow-black/5 flex items-center gap-x-2 justify-between mb-4 text-left"

@@ -19,18 +19,14 @@ const ErrorNotifier = () => {
 
     if (!error) return null;
 
-    // if (error && (error.errorCode === 'unauthorized' || error.errorCode === 'forbidden')) {
-    //     navigate({
-    //         pathname: '/',
-    //         search: "?" + new URLSearchParams({
-    //             returnUrl: location.pathname, 
-    //             expiredToken: true}).toString()
-    //     })
-
-    //     // return (
-    //     //     <ErrorMessage message={`Your log in session has expired, please log in again to continue.`} dismissHandler={()=>{dismissHandler()}} />
-    //     // )
-    // }
+    if (error && (error.errorCode === 'unauthorized' || error.errorCode === 'expired_token')) {
+        navigate({
+            pathname: '/',
+            search: "?" + new URLSearchParams({
+                returnUrl: location.pathname, 
+                expiredToken: true}).toString()
+        })
+    }
 
     // if (error && error.errorCode !== 'unauthorized' && error.errorCode !== 'forbidden') {
     if (error) {

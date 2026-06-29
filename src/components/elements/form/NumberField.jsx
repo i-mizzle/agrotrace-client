@@ -4,17 +4,11 @@ import {NumericFormat} from 'react-number-format';
 const NumberField = ({
     inputLabel, 
     fieldId, 
-    inputType, 
+    inputPlaceholder, 
     hasError, 
     returnFieldValue, 
     preloadValue, 
     disabled, 
-    includeButton, 
-    buttonLabel, 
-    buttonAction,
-    bgClass,
-    showPasswordMeter,
-    autoFocus,
     maxLength,
     requiredField
 }) => {
@@ -52,10 +46,12 @@ const NumberField = ({
                 type="text"
                 maxLength={maxLength}
                 thousandSeparator={true}
+                placeholder={inputPlaceholder}
+                disabled={disabled}
                 allowNegative={false}
                 decimalScale={2}
                 fixedDecimalScale={false}
-                className={`rounded py-3 px-3 text-sm block w-full focus:border-gray-800 focus:outline-none hover:border-gray-200 hover:bg-gray-50 border bg-gray-100  transition duration-200 focus:bg-white font-outfit placeholder:font-outfit  ${hasError ? 'border-red-600' : 'border-gray-100'}`}
+                className={`rounded py-4 px-4 text-sm block w-full focus:border-gray-800 focus:outline-none hover:border-gray-200 dark:hover:border-at-dark-gray border bg-at-black/5 dark:bg-at-dark-gray/5 transition duration-200 focus:bg-white dark:focus:bg-at-black/60 font-outfit placeholder:font-outfit  ${hasError ? 'border-red-400' : 'border-transparent'}`}
                 onValueChange={(values, sourceInfo)=>{setValue(values.floatValue)}}
             />
         </div>

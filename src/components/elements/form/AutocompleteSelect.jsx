@@ -31,6 +31,10 @@ const AutocompleteSelect = ({
     const [optionsOpen, setOptionsOpen] = useState(false)
 
     useEffect(() => {
+        setVisibleOptions(selectOptions || [])
+    }, [selectOptions])
+
+    useEffect(() => {
         const preSelect = () => {
             if(!preSelected || preSelected === undefined) {
                 return

@@ -119,7 +119,7 @@ const DataTable = ({
                 
                 <div className="pt-2">
                     {/* table header */}
-                    <ul className="bg-gray-50 flex flex-row justify-between items-center w-full text-xs mt-1 px-3 py-2 relative font-[600]">
+                    <ul className="bg-gray-50 flex flex-row justify-between items-center w-full text-xs mt-1 px-3 py-2 relative font-semibold">
                        {/* <li className="w-1/12" />  */}
                         {tableOptions.selectable && tableOptions.multiselect && <input type="checkbox" className="mr-2 absolute left-0" onChange={()=>{toggleAllSelection()}} checked={tableData.length === selectedItemsCount} />}
                         {tableHeaders.map((header, headerIndex) => (
