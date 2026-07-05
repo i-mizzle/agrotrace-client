@@ -7,10 +7,14 @@ import CalendarIcon from '../../../../components/elements/icons/CalendarIcon'
 import BoxIcon from '../../../../components/elements/icons/BoxIcon'
 import ArrowIcon from '../../../../components/elements/icons/ArrowIcon'
 import { locationAssets, locationEvents } from './locationMockData'
-import { statusColorMap } from '../assets/assetMockData'
-import { unSlugify } from '../../../../utils/utils'
-import { useDispatch } from 'react-redux';
-import { ERROR } from '../../../../store/types';
+import { authHeader, baseUrl, unSlugify } from '../../../../utils/utils'
+import { useDispatch, useSelector } from 'react-redux';
+import { ERROR, GET_ASSETS } from '../../../../store/types';
+import axios from 'axios';
+import Loader from '../../../../components/elements/Loader';
+import ErrorState from '../../../../components/elements/ErrorState';
+import { fetchAssets } from '../../../../store/actions/assetsActions';
+import EmptyState from '../../../../components/elements/EmptyState';
 
 const fallbackAssets = [
   { id: 'asset-001', name: 'Demonstration Crop Plot', type: 'crop', quantity: '2.0 ha', status: 'active' },
@@ -87,19 +91,26 @@ const LocationDetails = () => {
   const dispatch = useDispatch()
   const [location, setLocation] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  const assetsSelector = useSelector((state) => state.assets)
   
   useEffect(() => {
     window.scrollTo(0, 0)
 
     const fetchLocation = async () => {
       try {
+        dispatch({
+          type: GET_ASSETS,
+          payload: []
+        })
         const headers = authHeader()
 
         const response = await axios.get(`${baseUrl}/locations/${locationId}`, { headers })
         setLocation(response.data.data)
+        dispatch(fetchAssets(`location=${response.data.data._id}`, 1, 25))
         setLoading(false)
       } catch (error) {
-        console.error('Error fetching location details:', error.response.data)
+        console.error('Error fetching location details:', error)
         dispatch({
           type: ERROR,
           error
@@ -116,82 +127,101 @@ const LocationDetails = () => {
   }, [locationId])
 
 
-  if (!location) {
-    return <Navigate to="/producer/locations" replace />
-  }
+  // if (!location) {
+  //   return <Navigate to="/producer/locations" replace />
+  // }
 
-  const assets = locationAssets[location.id] || fallbackAssets
-  const events = locationEvents[location.id] || fallbackEvents
+  const assets = locationAssets[location?.id] || fallbackAssets
+  const events = locationEvents[location?.id] || fallbackEvents
 
   return (
-    <div className="w-full space-y-4">
-      <div className="">
-        <div className="flex items-center justify-between gap-x-2 mb-3">
-          <div>
-            <p className="text-xs opacity-70">Location Details</p>
-            <h2 className="text-lg font-semibold font-space-grotesk">{location.lga}, {location.state}</h2>
+    <>
+    {loading ? (
+      <Loader />
+    ) : (
+
+      !location ? (
+        <ErrorState errorStateTitle="Error fetching location" errorStateText="Sorry, we couldn't fetch the location details. Please try again later." />
+      ) : (
+      <div className="w-full space-y-4">
+        <div className="">
+          <div className="flex items-start justify-between gap-x-2 mb-3">
+            <div>
+              <p className="text-xs opacity-70">Location Details</p>
+              <h2 className="text-lg font-semibold font-space-grotesk">{location.name}</h2>
+              <p className="text-sm font-medium">{location.lga}, {location.state}</p>
+            </div>
+            <span className="px-2.5 py-1 mt-3 rounded-full text-xs bg-accent/15 text-at-dark-gray dark:text-accent font-medium">
+              {location.landSize} ha
+            </span>
           </div>
-          <span className="px-2.5 py-1 rounded-full text-xs bg-accent/15 text-at-dark-gray dark:text-accent font-medium">
-            {location.landSize} ha
-          </span>
+
+          <div className="mb-3 rounded-lg bg-at-dark-gray/5 dark:bg-at-dark-surface text-xs opacity-85 flex items-start gap-x-2">
+            <MapPinIcon className="w-4 h-4 mt-0.5" />
+            <span>{location.addressDescription}</span>
+          </div>
+
+          <div className="w-full h-[48vh] min-h-80 rounded-xl overflow-hidden border border-gray-200/60 dark:border-gray-700/40">
+            <MapContainer center={[location.latitude, location.longitude]} zoom={12} scrollWheelZoom={false} className="w-full h-full">
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <CircleMarker
+                center={[location.latitude, location.longitude]}
+                fillColor="#02bc75"
+                fillOpacity={0.95}
+                radius={10}
+                stroke={false}
+              >
+                <Popup>
+                  <div className="min-w-52">
+                    <p className="font-semibold">{location.lga}, {location.state}</p>
+                    <p className="text-xs mt-1">{location.addressDescription}</p>
+                    <p className="text-xs mt-1">
+                      {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
+                    </p>
+                  </div>
+                </Popup>
+              </CircleMarker>
+            </MapContainer>
+          </div>
         </div>
 
-        <div className="mb-3 p-3 rounded-lg bg-at-dark-gray/5 dark:bg-at-dark-surface text-xs opacity-85 flex items-start gap-x-2">
-          <MapPinIcon className="w-4 h-4 mt-0.5" />
-          <span>{location.addressDescription}</span>
+        <div className="">
+          <div className="mb-3">
+            <p className="text-xs opacity-70">Assets In This Location</p>
+            <h3 className="text-lg font-semibold font-space-grotesk">Location Assets</h3>
+          </div>
+
+          {assetsSelector.loading ? (
+            <Loader />
+          ) : assetsSelector.assetsError ? (
+            <ErrorState errorStateTitle="Error fetching assets" errorStateText="Sorry, we couldn't fetch the assets for this location. Please try again later." />
+          ) : assetsSelector.assets?.assets?.length === 0 ? (
+            <EmptyState emptyStateTitle="No assets found" emptyStateText="There are no assets associated with this location." />
+          ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {assetsSelector.assets?.assets?.map((asset) => (
+              <AssetCard key={asset.id} asset={asset} />
+            ))}
+          </div>)}
         </div>
 
-        <div className="w-full h-[48vh] min-h-80 rounded-xl overflow-hidden border border-gray-200/60 dark:border-gray-700/40">
-          <MapContainer center={[location.latitude, location.longitude]} zoom={12} scrollWheelZoom={false} className="w-full h-full">
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <CircleMarker
-              center={[location.latitude, location.longitude]}
-              fillColor="#02bc75"
-              fillOpacity={0.95}
-              radius={10}
-              stroke={false}
-            >
-              <Popup>
-                <div className="min-w-52">
-                  <p className="font-semibold">{location.lga}, {location.state}</p>
-                  <p className="text-xs mt-1">{location.addressDescription}</p>
-                  <p className="text-xs mt-1">
-                    {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
-                  </p>
-                </div>
-              </Popup>
-            </CircleMarker>
-          </MapContainer>
+        <div className="">
+          <div className="mb-3">
+            <p className="text-xs opacity-70">Activity In This Location</p>
+            <h3 className="text-lg font-semibold font-space-grotesk">Location Events</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {events.map((event) => (
+              <EventCard event={event} key={event.id} />
+            ))}
+          </div>
         </div>
-      </div>
-
-      <div className="">
-        <div className="mb-3">
-          <p className="text-xs opacity-70">Assets In This Location</p>
-          <h3 className="text-lg font-semibold font-space-grotesk">Location Assets</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {assets.map((asset) => (
-            <AssetCard key={asset.id} asset={asset} />
-          ))}
-        </div>
-      </div>
-
-      <div className="">
-        <div className="mb-3">
-          <p className="text-xs opacity-70">Activity In This Location</p>
-          <h3 className="text-lg font-semibold font-space-grotesk">Location Events</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {events.map((event) => (
-            <EventCard event={event} key={event.id} />
-          ))}
-        </div>
-      </div>
-    </div>
+      </div>)
+    )}
+    </>
   )
 }
 

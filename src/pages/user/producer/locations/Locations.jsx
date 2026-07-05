@@ -26,7 +26,8 @@ const LocationCard = ({ location, isHighlighted = false, onSelect }) => {
             <MapPinIcon className="w-5 h-5 text-at-dark-gray dark:text-accent" />
           </div>
           <div>
-            <p className="text-sm font-semibold font-space-grotesk">{location.lga}, {location.state}</p>
+            <p className="text-sm font-semibold font-space-grotesk">{location.name}</p>
+            <p className="text-xs font-medium">{location.lga}, {location.state}</p>
             <p className="text-xs opacity-75 mt-0.5">{location.addressDescription}</p>
           </div>
         </div>

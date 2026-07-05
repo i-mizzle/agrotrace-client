@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { fetchAssets } from '../../../../store/actions/assetsActions'
 import Loader from '../../../../components/elements/Loader'
 import EmptyState from '../../../../components/elements/EmptyState'
-import { statusColorMap } from './assetMockData'
+import { statusColorMap } from './asset.const';
 
 const AssetCard = ({ asset }) => {
   const colors = statusColorMap[asset.status] || statusColorMap.active

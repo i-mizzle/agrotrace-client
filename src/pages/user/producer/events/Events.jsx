@@ -1,12 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import CalendarIcon from '../../../../components/elements/icons/CalendarIcon'
 import MapPinIcon from '../../../../components/elements/icons/MapPinIcon'
 import BoxIcon from '../../../../components/elements/icons/BoxIcon'
 import ArrowIcon from '../../../../components/elements/icons/ArrowIcon'
 import { placeholderAssets, placeholderLocations } from '../assets/assetMockData'
-import { eventCategoryColorMap, eventTypeCategoryColorMap, placeholderEvents } from './eventMockData'
+import { eventCategoryColorMap, eventTypeCategoryColorMap } from './event.const'
 import { unSlugify } from '../../../../utils/utils'
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchEvents } from '../../../../store/actions/eventsActions';
+import Loader from '../../../../components/elements/Loader';
 
 const EventCard = ({ event }) => {
   const asset = placeholderAssets.find((item) => item.id === event.asset)
@@ -22,7 +25,7 @@ const EventCard = ({ event }) => {
       <div className="flex items-start justify-between gap-x-3">
         <div>
           <p className="text-sm font-semibold font-space-grotesk">{event.title}</p>
-          <p className="text-xs opacity-70 mt-1">{unSlugify(event.eventType)}</p>
+          <p className="text-xs opacity-70 mt-1 capitalize">{unSlugify(event.eventType)}</p>
         </div>
         <ArrowIcon className="w-4 h-4 mt-0.5 opacity-60 shrink-0" />
       </div>
@@ -44,11 +47,11 @@ const EventCard = ({ event }) => {
       <div className="mt-4 grid grid-cols-2 gap-x-2 gap-y-4 text-xs opacity-75">
         <div className="flex items-center gap-x-2">
           <BoxIcon className="w-3.5 h-3.5 shrink-0" />
-          <span>{asset?.name || 'Unknown Asset'}</span>
+          <span>{event?.asset?.name || 'Unknown Asset'}</span>
         </div>
         <div className="flex items-center gap-x-2">
           <MapPinIcon className="w-3.5 h-3.5 shrink-0" />
-          <span>{location ? `${location.lga}, ${location.state}` : 'Unknown Location'}</span>
+          <span>{event.location ? `${event?.location?.name}` : 'Unknown Location'}</span>
         </div>
         <div className="flex items-center gap-x-2">
           <CalendarIcon className="w-3.5 h-3.5 shrink-0" />
@@ -62,9 +65,20 @@ const EventCard = ({ event }) => {
 }
 
 const Events = () => {
-  const events = [...placeholderEvents].sort((firstEvent, secondEvent) => new Date(secondEvent.date) - new Date(firstEvent.date))
-  const offlineEvents = events.filter((event) => event.recordedOffline).length
-  const dueSoonEvents = events.filter((event) => event.nextDueDate).length
+  const eventsSelector = useSelector((state) => state.events)
+  const dispatch = useDispatch()
+  const [page, setPage] = useState(1)
+  const [perPage, setPerPage] = useState(10)
+  const [filters, setFilters] = useState('')
+
+  useEffect(() => {
+      dispatch(fetchEvents(filters, page, perPage))
+  
+    return () => {
+      
+    }
+  }, [page, perPage, filters])
+  
 
   return (
     <div className="w-full space-y-4">
@@ -93,24 +107,33 @@ const Events = () => {
         </div>
       </div> */}
 
-      <div className="">
-        {/* <div className="mb-4">
-          <p className="text-xs opacity-70">Chronological Feed</p>
-          <h2 className="text-lg font-semibold font-space-grotesk mt-1">Recorded Events</h2>
-        </div> */}
+      {eventsSelector?.loadingEvents ? (
+        <div className="py-10">
+          <Loader />
+        </div>
+      ) 
+      
+      : 
 
-        {events.length === 0 ? (
-          <div className="py-10 text-center">
-            <p className="text-sm opacity-60">No events have been recorded yet.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {events.map((event) => (
-              <EventCard event={event} key={event.id} />
-            ))}
-          </div>
-        )}
-      </div>
+        <div className="">
+          {/* <div className="mb-4">
+            <p className="text-xs opacity-70">Chronological Feed</p>
+            <h2 className="text-lg font-semibold font-space-grotesk mt-1">Recorded Events</h2>
+          </div> */}
+
+          {eventsSelector?.events?.events?.length === 0 ? (
+            <div className="py-10 text-center">
+              <p className="text-sm opacity-60">No events have been recorded yet.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {eventsSelector?.events?.events?.map((event) => (
+                <EventCard event={event} key={event.id} />
+              ))}
+            </div>
+          )}
+        </div>
+      }
     </div>
   )
 }

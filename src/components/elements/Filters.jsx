@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import CloseIcon from './icons/CloseIcon'
 
 import PlusIcon from './icons/PlusIcon'
@@ -105,10 +105,19 @@ const Filters = ({filterOptions, returnSelected, resetFilters, checkConditions, 
         setActiveFilters(newFilters)
     }
 
-    const performSearch = debounce((term, optionIndex, option) => {
-        console.log(option)
-        performFilterSearch()
-    })
+    const performSearch = useMemo(() => {
+        return debounce((term) => {
+            performFilterSearch(term)
+        })
+    }, [performFilterSearch])
+
+    useEffect(() => {
+        return () => {
+            if (performSearch?.cancel) {
+                performSearch.cancel()
+            }
+        }
+    }, [performSearch])
 
     return (
         <div className="flex flex-row gap-2 flex-wrap">

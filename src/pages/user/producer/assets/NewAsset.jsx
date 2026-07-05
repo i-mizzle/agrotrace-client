@@ -159,7 +159,7 @@ const NewAsset = () => {
           />
         </div>
         :
-        <p className="text-xs p-3 dark:bg-slate-100/5 mt-5 rounded bg-slate-200 text-slate-600 dark:text-slate-300">You need at least one location on your account to keep this asset. You have no locations yet. Navigate to the Locations (<Link to="/producer/locations/new-location" className="text-blue-500 hover:underline">or click here</Link>) section to add one.</p>
+        <p className="text-xs p-3 dark:bg-slate-100/5 mt-5 rounded bg-slate-200 text-slate-600 dark:text-slate-300">You need at least one location on your account to keep this asset. You have no locations yet. Navigate to the Locations section (<Link to="/producer/locations/new-location" className="text-blue-500 hover:underline">or click here</Link>) to add one.</p>
         }
 
         <div className="mt-5">

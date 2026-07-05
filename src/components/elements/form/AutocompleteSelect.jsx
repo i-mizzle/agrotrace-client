@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import PropTypes from 'prop-types';
 import PlusIcon from '../icons/PlusIcon';
 import InlinePreloader from '../InlinePreloader';
 import CheckIcon from '../icons/CheckIcon';
 import { useOutsideAlerter } from './SelectField';
+import { debounce } from '../../../utils/utils';
 
 const AutocompleteSelect = ({
     selectOptions, 
@@ -24,11 +25,29 @@ const AutocompleteSelect = ({
     requiredField,
     conditionalItemStyling,
     position='top-[90px]',
-    disableAutocomplete=false
+    disableAutocomplete=false,
+    enableSearch=false,
+    searchFunction,
+    searchInProgress=false
 }) => {
     const [activeValue, setActiveValue] = useState(preSelected && preSelectedLabel ? preSelected[preSelectedLabel] : '')
     const [visibleOptions, setVisibleOptions] = useState(selectOptions)
     const [optionsOpen, setOptionsOpen] = useState(false)
+
+    const debouncedSearch = useMemo(() => {
+        if (!enableSearch || !searchFunction) {
+            return null
+        }
+        return debounce(searchFunction, 3000)
+    }, [enableSearch, searchFunction])
+
+    useEffect(() => {
+        return () => {
+            if (debouncedSearch?.cancel) {
+                debouncedSearch.cancel()
+            }
+        }
+    }, [debouncedSearch])
 
     useEffect(() => {
         setVisibleOptions(selectOptions || [])
@@ -65,6 +84,11 @@ const AutocompleteSelect = ({
     }
 
     const filterOptions = (term) => {
+        if(enableSearch && enableSearch === true && searchFunction) {
+            debouncedSearch?.(term)
+            setActiveValue(term)
+            return
+        } 
         const filtered = selectOptions.filter((option)=> {
             if (titleField && titleField !== '') {
                 return option[titleField].toLowerCase().includes(term.toLowerCase())
@@ -74,6 +98,7 @@ const AutocompleteSelect = ({
         })
         setActiveValue(term)
         setVisibleOptions(filtered)
+
     }
 
     const changeActiveValue = (value, object) => {
@@ -117,7 +142,7 @@ const AutocompleteSelect = ({
                 {/* Text input */}
                 <input 
                     type="text" 
-                    className={`rounded py-4 px-4 text-sm block w-full focus:border-gray-800 focus:outline-none hover:border-gray-200 dark:hover:border-at-dark-gray border bg-at-black/5 dark:bg-at-dark-gray/5 transition duration-200 focus:bg-white dark:focus:bg-at-black/60 font-outfit placeholder:font-outfit  ${hasError ? 'border-red-400' : 'border-transparent'}`}
+                    className={`rounded py-4 px-4 text-sm block w-full focus:border-gray-800 focus:outline-none hover:border-gray-200 dark:hover:border-at-dark-gray border bg-at-black/5 dark:bg-at-dark-gray/5 transition duration-200 focus:bg-white dark:focus:bg-at-black/60 font-outfit placeholder:font-outfit capitalize  ${hasError ? 'border-red-400' : 'border-transparent'}`}
                     onClick={()=>{openOptions()}}  
                     onFocus={()=>{openOptions()}}  
                     placeholder={placeholderText}
@@ -140,10 +165,11 @@ const AutocompleteSelect = ({
                         </svg>
                     </button> */}
                     <div className='relative'>
-                        {visibleOptions.map((option, optionIndex) => (
+                        {searchInProgress && <InlinePreloader />}
+                        {!searchInProgress && visibleOptions.map((option, optionIndex) => (
                             <button key={optionIndex} 
                                 className={
-                                    `relative w-full p-3 my-1 flex flex-row text-left items-center gap-x-3 text-sm transition duration-200 hover:bg-gray-100 
+                                    `relative w-full capitalize p-3 my-1 flex flex-row text-left items-center gap-x-3 text-sm transition duration-200 hover:bg-gray-100 
                                     ${conditionalItemStyling && option[conditionalItemStyling.conditionTriggerKey] == true 
                                         ? conditionalItemStyling.classes 
                                         : 'text-gray-500'}`

@@ -94,8 +94,11 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        <div className="p-4 rounded-lg bg-at-dark-gray/5 dark:bg-at-dark-surface flex flex-col items-center">
-          <img src={qrCodeUrl} alt={`QR code for ${product.labelCode}`} className="w-48 h-48 rounded-lg border border-gray-200/60 dark:border-gray-700/40" />
+        <div className="p-4 bg-at-dark-gray/5 dark:bg-at-dark-surface flex flex-col items-center">
+          <img 
+            src={qrCodeUrl} 
+            alt={`QR code for ${product.labelCode}`} 
+            className="w-48 h-48 p-3 border border-gray-200/60 dark:border-gray-700/40 dark:invert" />
           <p className="text-xs opacity-65 mt-3 break-all text-center">{qrPayload}</p>
           <a
             href={qrCodeUrl}

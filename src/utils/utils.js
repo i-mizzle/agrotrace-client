@@ -506,10 +506,22 @@ export const parseNigerianCities = (state) => {
 
 export const debounce = (func, timeout = 1000) => {
     let timer;
-    return function (...args) {
+    const debounced = function (...args) {
         clearTimeout(timer);
-        timer = setTimeout(() => func.apply(this, args), timeout);
+        timer = setTimeout(() => {
+            timer = null
+            func.apply(this, args)
+        }, timeout);
     };
+
+    debounced.cancel = () => {
+        if (timer) {
+            clearTimeout(timer)
+            timer = null
+        }
+    }
+
+    return debounced
 }
 
 // export const parseCountryStates = () => {

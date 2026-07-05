@@ -39,6 +39,44 @@ export const DELETE_ASSET = 'DELETE_ASSET';
 export const DELETING_ASSET = 'DELETING_ASSET';
 export const ASSETS_ERROR = 'ASSETS_ERROR';
 
+// events
+export const GET_EVENTS = 'GET_EVENTS';
+export const GETTING_EVENTS = 'GETTING_EVENTS';
+export const CREATE_EVENT = 'CREATE_EVENT';
+export const CREATING_EVENT = 'CREATING_EVENT';
+export const UPDATE_EVENT = 'UPDATE_EVENT';
+export const UPDATING_EVENT = 'UPDATING_EVENT';
+export const DELETE_EVENT = 'DELETE_EVENT';
+export const DELETING_EVENT = 'DELETING_EVENT';
+export const EVENTS_ERROR = 'EVENTS_ERROR';
+
+// Products
+export const GET_PRODUCTS = 'GET_PRODUCTS';
+export const GETTING_PRODUCTS = 'GETTING_PRODUCTS';
+export const CREATE_PRODUCT = 'CREATE_PRODUCT';
+export const CREATING_PRODUCT = 'CREATING_PRODUCT';
+export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
+export const UPDATING_PRODUCT = 'UPDATING_PRODUCT';
+export const DELETE_PRODUCT = 'DELETE_PRODUCT';
+export const DELETING_PRODUCT = 'DELETING_PRODUCT';
+export const PRODUCTS_ERROR = 'PRODUCTS_ERROR';
+
+// Batches
+export const GET_BATCHES = 'GET_BATCHES';
+export const GETTING_BATCHES = 'GETTING_BATCHES';
+export const CREATE_BATCH = 'CREATE_BATCH';
+export const CREATING_BATCH = 'CREATING_BATCH';
+export const UPDATE_BATCH = 'UPDATE_BATCH';
+export const UPDATING_BATCH = 'UPDATING_BATCH';
+export const DELETE_BATCH = 'DELETE_BATCH';
+export const DELETING_BATCH = 'DELETING_BATCH';
+export const BATCHES_ERROR = 'BATCHES_ERROR';
+
+// Users
+export const GET_USERS = 'GET_USERS';
+export const GETTING_USERS = 'GETTING_USERS';
+export const USERS_ERROR = 'USERS_ERROR';
+
 // Audit logs
 export const GET_AUDIT_LOGS = 'GET_AUDIT_LOGS';
 export const GETTING_AUDIT_LOGS = 'GETTING_AUDIT_LOGS';
