@@ -18,6 +18,9 @@ import TextareaField from '../../../../components/elements/form/TextareaField';
 import ChevronIcon from '../../../../components/elements/icons/ChevronIcon';
 import FileUpload from '../../../../components/elements/form/FileUpload';
 import PlusIcon from '../../../../components/elements/icons/PlusIcon';
+import TextField from '../../../../components/elements/form/TextField';
+import ToggleSwitch from '../../../../components/elements/form/ToggleSwitch';
+import TrashIcon from '../../../../components/elements/icons/TrashIcon';
 
 const NewEvent = () => {
   const [eventPayload, setEventPayload] = useState({})
@@ -52,7 +55,69 @@ const NewEvent = () => {
   const [validationErrors, setValidationErrors] = useState({})
   
   const validateForm = () => {
-    let errors = {}
+    const errors = {}
+
+    const isEmpty = (value) => {
+      if (value === null || value === undefined) return true
+      if (typeof value === 'string') return value.trim() === ''
+      return false
+    }
+
+    if (isEmpty(eventPayload?.asset)) {
+      errors.asset = 'Please select an asset'
+    }
+
+    if (isEmpty(eventPayload?.description)) {
+      errors.description = 'Event description is required'
+    }
+
+    if (!isEmpty(eventPayload?.description) && eventPayload?.description.length < 5) {
+      errors.description = '5 chars minimum'
+    }
+
+    if (!isEmpty(eventPayload?.description) && eventPayload?.description.length > 65) {
+      errors.description = '65 chars maximum'
+    }
+
+    if (isEmpty(eventPayload?.eventCategory)) {
+      errors.eventCategory = 'Please select an event category'
+    }
+
+    if (isEmpty(eventPayload?.eventTypeCategory)) {
+      errors.eventTypeCategory = 'Please select an event type category'
+    }
+
+    if (isEmpty(eventPayload?.eventType)) {
+      errors.type = 'Please select an event type'
+    }
+
+    if (['transfer', 'relocation'].includes(eventPayload?.eventType) && isEmpty(eventPayload?.newLocation)) {
+      errors.newLocation = 'Please select the new location'
+    }
+
+    if (selectedAsset?.type !== 'animal') {
+      if (isEmpty(eventPayload?.quantityAffected) || Number(eventPayload?.quantityAffected) <= 0) {
+        errors.quantityAffected = 'Quantity affected must be greater than 0'
+      }
+
+      if (isEmpty(eventPayload?.weightAffected) || Number(eventPayload?.weightAffected) <= 0) {
+        errors.weightAffected = 'Weight affected must be greater than 0'
+      }
+    }
+
+    if (isEmpty(eventPayload?.costEstimate) || Number(eventPayload?.costEstimate) <= 0) {
+      errors.costEstimate = 'Cost estimate must be greater than 0'
+    }
+
+    if (!eventPayload?.date || Number.isNaN(new Date(eventPayload?.date).getTime())) {
+      errors.date = 'Please provide a valid event date'
+    }
+
+    const notesRequired = eventPayload?.eventTypeCategory === 'health' || eventPayload?.eventType === 'death'
+    const noteValue = eventPayload?.notes?.[0]?.note
+    if (notesRequired && isEmpty(noteValue)) {
+      errors.notes = 'Notes are required for this event'
+    }
 
     setValidationErrors(errors)
     return Object.keys(errors).length === 0
@@ -83,7 +148,41 @@ const NewEvent = () => {
   const [attachments, setAttachments] = useState([''])
   const [addAttachments, setAddAttachments] = useState(false)
   const [addProducts, setAddProducts] = useState(false)
+  const [products, setProducts] = useState([])
+  const emptyProduct = { name: '', type: '', category: '', quantity: '', unit: '' }
 
+  const toggleAddProducts = () => {
+    setAddProducts(!addProducts)
+    if (addProducts) {
+      setProducts([]) // Clear products when toggling off
+    } else {
+      setProducts([emptyProduct]) // Initialize with one empty product when toggling on
+    }
+  }
+
+  const [collapsedProductIndices, setCollapsedProductIndices] = useState([])
+
+  const toggleProductCollapse = (index) => {
+    if (collapsedProductIndices.includes(index)) {
+      setCollapsedProductIndices(collapsedProductIndices.filter(i => i !== index))
+    } else {
+      setCollapsedProductIndices([...collapsedProductIndices, index])
+    }
+  }
+
+  const addProduct = () => {
+    setProducts([...products, emptyProduct])
+    // collapse all products before this new one
+    setCollapsedProductIndices([...collapsedProductIndices, products.length])
+  }
+
+  const removeProduct = (index) => {
+    if (products.length > 0) {
+      const updatedProducts = products.filter((_, i) => i !== index)
+      setProducts(updatedProducts)
+    }
+  }
+  
   return (
     <div className="w-full max-w-3xl">
       <div className="">
@@ -116,7 +215,8 @@ const NewEvent = () => {
               <p className="text-xs opacity-60">{activeAsset ? 'This asset has been pre-selected based on your previous choice. Please click on the + button at the bottom navigation to change it.' : ''}</p>
             </div>
           :
-            <p className="text-xs p-3 dark:bg-slate-100/5 mt-5 rounded bg-slate-200 text-slate-600 dark:text-slate-300">You need at least one asset on your account to create an event. You have no assets yet. Navigate to the Assets section (<Link to="/producer/assets/new-asset" className="text-blue-500 hover:underline">or click here</Link>) to add one.</p>
+            <p className="text-xs p-3 dark:bg-slate-900/20 bg-slate-50 mt-5 rounded text-slate-600 dark:text-slate-300">You need at least one asset on your account to create an event. You have no assets yet. Navigate to the Assets section (<Link to="/producer/assets/new-asset" className="text-blue-500 hover:underline">or click here</Link>) to add one.</p>
+          
           }
 
           {usersSelector?.users?.users?.length > 0 ? 
@@ -140,8 +240,19 @@ const NewEvent = () => {
               />
             </div>
           :
-            <p className="text-xs p-3 dark:bg-slate-100/5 mt-5 rounded bg-slate-200 text-slate-600 dark:text-slate-300">No regulators, inspectors or exporters found on the system. This event will be recorded as created by you.</p>
+            <p className="text-xs p-3 dark:bg-slate-900/20 bg-slate-50 mt-5 rounded text-slate-600 dark:text-slate-300">No regulators, inspectors or exporters found on the system. This event will be recorded as created by you.</p>
           }
+
+          <div className="mt-5">
+            <TextField
+              inputLabel="Event Description"
+              requiredField={true}
+              hasError={validationErrors.description}
+              returnFieldValue={(value) => setEventPayload({ ...eventPayload, description: value })}
+              inputPlaceholder={`Short description (eg: "Egg Picking", "Animal Vaccination")`}
+              maxLength={65}
+            />
+          </div>
 
           <div className="mt-5">
             <AutocompleteSelect
@@ -268,11 +379,11 @@ const NewEvent = () => {
             />
           </div>
 
-          <div className="px-4 py-2 mt-5 rounded dark:bg-slate-100/2 bg-slate-50">
+          <div className="px-4 py-2 mt-5 rounded dark:bg-slate-900/20 bg-slate-50">
             <div onClick={()=>{setAddAttachments(!addAttachments)}} className=" flex items-start justify-between gap-x-3 cursor-pointer">
               <div className="w-full">
                 <h2 className="text-[15px] font-semibold font-space-grotesk mt-1">Attachments</h2>
-                <p className="text-xs opacity-70">Click here to add attachments (documents, videos, images) for this event</p>
+                <p className="text-xs text-gray-500 dark:text-slate-300">Click here to add attachments (documents, videos, images) for this event</p>
               </div>
               <div className="w-10 mt-4 flex justify-end items-end">
                 <ChevronIcon className={`w-4 h-4 transition duration-200 ${addAttachments ? 'rotate-270' : 'rotate-180'}`} />
@@ -281,7 +392,7 @@ const NewEvent = () => {
 
             {addAttachments && (
               <>
-                {attachments.map((attachment, attachmentIndex)=>(<div className="mt-4" onClick={(e) => e.stopPropagation()}>
+                {attachments.map((attachment, attachmentIndex)=>(<div key={attachmentIndex} className="mt-4" onClick={(e) => e.stopPropagation()}>
                   <FileUpload 
                     hasError={validationErrors.attachments}
                     returnFileDetails={(fileDetails) => {
@@ -314,20 +425,106 @@ const NewEvent = () => {
           </div>
 
           {eventPayload?.eventCategory === 'processing' && (
-          <div className="px-4 py-2 mt-5 rounded dark:bg-slate-100/2 bg-slate-50">
-            <div onClick={()=>{setAddProducts(!addProducts)}} className=" flex items-start justify-between gap-x-3 cursor-pointer">
-              <div className="w-full">
-                <h2 className="text-[15px] font-semibold font-space-grotesk mt-1">Products</h2>
-                <p className="text-xs opacity-70">This is an event with a category of "Processing". Were any products created from this processing event (Eg: eggs from a picking, Beef cuts from a slaughter)? Click here to add any products created.</p>
-              </div>
-              <div className="w-10 mt-4 flex justify-end items-end">
-                <ChevronIcon className={`w-4 h-4 transition duration-200 ${addProducts ? 'rotate-270' : 'rotate-180'}`} />
-              </div>
-            </div>
+          <div className="mt-5">
+            <ToggleSwitch
+              label="Add Products"
+              description="This is an event with a category of 'Processing'. Were any products created from this processing event (Eg: eggs from a picking, Beef cuts from a slaughter)?"
+              toggle={() => toggleAddProducts()}
+              checked={addProducts}
+            />
 
             {addProducts && (
               <div className="mt-4">
-                {/* Add your product form or components here */}
+                {products.map((product, index) => (
+                  <div key={index} className="mb-4 p-4 border rounded-lg dark:border-at-dark-gray/40">
+                    {collapsedProductIndices.includes(index) ? (
+                      <div className="w-full flex items-start gap-x-3 justify-between cursor-pointer" onClick={() => toggleProductCollapse(index)}>
+                        <div className="w-full">
+                          <p className="font-medium text-sm">{product.name}</p>
+                          <p className="text-xs">{product.quantity} {product.unit}</p>
+                        </div>
+                        {index > 0 && <button className="p-2 rounded bg-slate-100 dark:bg-slate-900 absolute -top-3 right-0" onClick={() => removeProduct(index)}  >
+                          <TrashIcon className="w-4 h-4" />
+                        </button>}
+                      </div>)
+                      :
+                      <div className="relative">
+                        {index > 0 && <button className="p-2 rounded bg-slate-100 dark:bg-slate-900 absolute -top-3 right-0" onClick={() => removeProduct(index)}  >
+                          <TrashIcon className="w-4 h-4" />
+                        </button>}
+                        <div className="mt-5">
+                          <TextField
+                            inputLabel={`Product Name`}
+                            requiredField={true}
+                            hasError={validationErrors[`productName${index}`]}
+                            returnFieldValue={(value) => {
+                              const updatedProducts = [...products]
+                              updatedProducts[index].name = value
+                              setProducts(updatedProducts)
+                            }}
+                            inputPlaceholder={`Enter product name`}
+                          />
+                        </div>
+                        <div className="mt-1">
+                          <AutocompleteSelect
+                            hasError={validationErrors.asset}
+                            inputLabel="Product Category"
+                            preSelected={''}
+                            preSelectedLabel="name"
+                            requiredField={true}
+                            returnFieldValue={(value) => {
+                              setEventPayload({ ...eventPayload, asset: value.id })
+                              setSelectedAsset(value)
+                            }}
+                            selectOptions={assetsSelector?.assets?.assets || []}
+                            titleField="name"
+                            placeholderText="Select a product category"
+                            enableSearch={true}
+                            searchFunction={(term) => {
+                              dispatch(fetchAssets(`searchTerm=${term}`))
+                            }}
+                            disabled={activeAsset ? true : false}
+                            searchInProgress={assetsSelector?.loadingAssets}
+                          />
+                        </div>
+                        <div className="mt-1">
+                          <NumberField
+                            inputLabel={`Product Quantity`}
+                            requiredField={true}
+                            hasError={validationErrors[`productQuantity${index}`]}
+                            returnFieldValue={(value) => {
+                              const updatedProducts = [...products]
+                              updatedProducts[index].quantity = value
+                              setProducts(updatedProducts)
+                            }}
+                            inputPlaceholder={`Quantity Produced`}
+                          />
+                        </div>
+                        <div className="mt-1">
+                          <TextField
+                            inputLabel={`Product Unit`}
+                            requiredField={true}
+                            hasError={validationErrors[`productUnit${index}`]}
+                            returnFieldValue={(value) => {
+                              const updatedProducts = [...products]
+                              updatedProducts[index].unit = value
+                              setProducts(updatedProducts)
+                            }}
+                            inputPlaceholder={`Enter product unit (e.g., kg, liters)`}
+                          />
+                        </div>
+                      </div>
+                    }
+
+                  </div>
+                ))}
+                <button 
+                  onClick={() => {addProduct()}}
+                  className="p-4 flex items-center justify-center border border-dashed dark:border-at-dark-gray rounded w-full mt-4 gap-1 text-sm "
+                > 
+                  <PlusIcon className="w-4 h-4" /> 
+                  Add another product
+                </button>
               </div>
             )}
           </div>

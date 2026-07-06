@@ -72,7 +72,7 @@ const CurrencyField = ({
                 allowNegative={false}
                 decimalScale={2}
                 fixedDecimalScale={true}
-                className="z-30 border-transparent bg-transparent outline-none w-full font-bold "
+                className="z-30 border-transparent bg-transparent outline-none w-full font-bold placeholder:text-slate-400 placeholder:font-outfit"
                 onValueChange={(values, sourceInfo)=>{setValue(values.floatValue)}}
             />
             {includeButton && includeButton === true && 

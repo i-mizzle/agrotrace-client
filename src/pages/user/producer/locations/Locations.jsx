@@ -143,7 +143,7 @@ const Locations = () => {
         <div className="flex items-center justify-between gap-x-2 mb-3">
           <div>
             <p className="text-xs opacity-70">Your Location Coverage</p>
-            <h2 className="text-lg font-semibold font-space-grotesk">Locations Overview</h2>
+            <h2 className="font-semibold font-space-grotesk">Locations Overview</h2>
           </div>
           <span className="px-2.5 py-1 rounded-full text-xs bg-accent/15 text-at-dark-gray dark:text-accent font-medium">
             {locationsSelector.locations.total} Locations

@@ -12,8 +12,6 @@ import { fetchEvents } from '../../../../store/actions/eventsActions';
 import Loader from '../../../../components/elements/Loader';
 
 const EventCard = ({ event }) => {
-  const asset = placeholderAssets.find((item) => item.id === event.asset)
-  const location = placeholderLocations[event.location]
   const categoryColors = eventCategoryColorMap[event.eventCategory] || eventCategoryColorMap.production
   const typeCategoryColors = eventTypeCategoryColorMap[event.eventTypeCategory] || eventTypeCategoryColorMap.inspection
 
@@ -24,7 +22,7 @@ const EventCard = ({ event }) => {
     >
       <div className="flex items-start justify-between gap-x-3">
         <div>
-          <p className="text-sm font-semibold font-space-grotesk">{event.title}</p>
+          <p className="text-sm font-semibold font-space-grotesk">{event?.description || ''}</p>
           <p className="text-xs opacity-70 mt-1 capitalize">{unSlugify(event.eventType)}</p>
         </div>
         <ArrowIcon className="w-4 h-4 mt-0.5 opacity-60 shrink-0" />
@@ -58,8 +56,6 @@ const EventCard = ({ event }) => {
           <span>{new Date(event.date).toLocaleDateString()}</span>
         </div>
       </div>
-
-      <p className="text-xs opacity-70 mt-3">{event.notes[0]?.note}</p>
     </Link>
   )
 }
@@ -82,10 +78,15 @@ const Events = () => {
 
   return (
     <div className="w-full space-y-4">
-      <div>
-        <p className="text-xs opacity-70">Producer Event Register</p>
-        <h1 className="text-lg font-semibold font-space-grotesk mt-1">Asset Events</h1>
-      </div>
+      <div className="flex items-center justify-between gap-x-2 mb-3">
+        <div>
+          <p className="text-xs opacity-70">Producer Event Register</p>
+          <h1 className="font-semibold font-space-grotesk mt-1">Events</h1>
+        </div>
+        <span className="px-2.5 py-1 rounded-full text-xs bg-accent/15 text-at-dark-gray dark:text-accent font-medium">
+          {eventsSelector?.events?.total} Events
+        </span>
+      </div> 
       {/* <div className="rounded-xl p-4 bg-white dark:bg-at-dark-gray/5 shadow-xl shadow-black/5">
         <p className="text-sm opacity-75 mt-2 max-w-2xl">
           Review production, health, movement, processing, quality, and export actions recorded against your assets.

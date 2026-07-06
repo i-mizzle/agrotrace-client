@@ -14,6 +14,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { ERROR } from '../../../store/types';
 import axios from 'axios';
+import Notifications from '../Notifications';
 
 const ProducerHeader = () => {
   const user = userDetails()
@@ -46,6 +47,8 @@ const ProducerHeader = () => {
     }
   }
 
+  const [notificationsOpen, setNotificationsOpen] = useState(false) 
+
   return (
     <>
       <header className="w-full sticky pt-2 top-0 bg-at-white dark:bg-at-black backdrop-blur-2xl z-999">
@@ -69,9 +72,9 @@ const ProducerHeader = () => {
             <button onClick={()=>{setFullNavOpen(true)}} className="w-8 h-12 flex items-center justify-center rounded-xl relative bg-white dark:bg-at-dark-gray/10 shadow-lg shadow-black/5">
               <DotsVertical className="w-5 h-5 text-at-black dark:text-at-white" />
             </button>
-            <button className="w-12 h-12 flex items-center justify-center rounded-xl relative bg-white dark:bg-at-dark-gray/10 shadow-lg shadow-black/5">
+            <button onClick={()=>{setNotificationsOpen(true)}} className="w-12 h-12 flex items-center justify-center rounded-xl relative bg-white dark:bg-at-dark-gray/10 shadow-lg shadow-black/5">
               <BellIcon className="w-6 h-6 opacity-80 text-at-black dark:text-at-white" /> 
-              <span className="w-1.5 h-1.5 rounded-full bg-red-500 absolute top-2 right-2" />
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 absolute top-2 right-2" />
             </button>
           </div>
         </div>
@@ -107,8 +110,13 @@ const ProducerHeader = () => {
             Logout
           </button>
         </div>
+      </SlideOutModal>
 
-
+      <SlideOutModal 
+        isOpen={notificationsOpen} 
+        closeFunction={() => setNotificationsOpen(false)} 
+      >
+        <Notifications />  
       </SlideOutModal>
     </>
   )

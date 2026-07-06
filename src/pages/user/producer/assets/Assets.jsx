@@ -68,7 +68,6 @@ const Assets = () => {
 
   const assets = assetsSelector?.assets?.assets || []
   const isLoading = assetsSelector?.loadingAssets
-  const totalAssets = assetsSelector?.assets?.total || assets.length
 
   useEffect(() => {
     dispatch(fetchAssets(filters, page, perPage))
@@ -88,14 +87,14 @@ const Assets = () => {
   return (
     <div className="w-full space-y-4">
       <div className="">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div className="flex w-full flex-row items-center justify-between gap-3">
           <div>
             <p className="text-xs opacity-70">Manage Your Assets</p>
-            <h3 className="text-lg font-semibold font-space-grotesk">Assets List</h3>
+            <h3 className="font-semibold font-space-grotesk">Assets List</h3>
           </div>
-          {/* <span className="px-2.5 py-1 rounded-full text-xs bg-accent/15 text-at-dark-gray dark:text-accent font-medium">
-            {totalAssets} Assets
-          </span> */}
+          <span className="px-2.5 py-1 rounded-full text-xs bg-accent/15 text-at-dark-gray dark:text-accent font-medium">
+            {assetsSelector?.assets?.total} Assets
+          </span>
         </div>
 
         {/* <div className="mt-4 flex flex-col md:flex-row gap-3">

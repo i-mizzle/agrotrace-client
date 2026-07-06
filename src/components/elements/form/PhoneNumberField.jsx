@@ -97,7 +97,7 @@ const PhoneNumberField = ({
                 </div>
             )}
 
-            <div className={`flex items-center gap-x-2 rounded py-4 px-4 text-sm w-full focus-within:border-gray-800 focus:outline-none hover:border-gray-200 dark:hover:border-at-dark-gray border bg-at-black/5 dark:bg-at-dark-gray/5 transition duration-200 focus:bg-white dark:focus:bg-at-black/60 font-outfit placeholder:font-outfit   ${
+            <div className={`flex items-center gap-x-2 rounded py-4 px-4 text-sm w-full focus-within:border-gray-800 focus:outline-none hover:border-gray-200 dark:hover:border-at-dark-gray border bg-at-black/5 dark:bg-at-dark-gray/5 transition duration-200 focus:bg-white dark:focus:bg-at-black/60 font-outfit placeholder:text-slate-400 placeholder:font-outfit   ${
                     hasError ? 'border-red-400' : 'border-transparent'
                 } ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}`}
             >

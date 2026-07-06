@@ -89,7 +89,7 @@ const SelectField = ({
         </div>
 
         <select
-          className={`rounded py-3 px-3 text-sm block w-full focus:border-gray-800 focus:outline-none hover:border-gray-200 hover:bg-gray-50 border bg-gray-100  transition duration-200 focus:bg-white font-outfit placeholder:font-outfit  ${hasError ? 'border-red-600' : 'border-gray-100'}`}
+          className={`rounded py-3 px-3 text-sm block w-full focus:border-gray-800 focus:outline-none hover:border-gray-200 hover:bg-gray-50 border bg-gray-100  transition duration-200 focus:bg-white font-outfit placeholder:text-slate-400 placeholder:font-outfit  ${hasError ? 'border-red-600' : 'border-gray-100'}`}
           onChange={(e) => { changeActiveValue(e.target.value); }}
           value={selectOptions.findIndex(option => option[titleField] === activeValue)}
           disabled={disabled}

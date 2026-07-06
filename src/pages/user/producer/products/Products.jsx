@@ -66,7 +66,7 @@ const Products = () => {
     <div className="w-full space-y-4">
       <div className="">
         <p className="text-xs opacity-70">Producer Product Register</p>
-        <h1 className="text-lg font-semibold font-space-grotesk mt-1">Products</h1>
+        <h1 className="font-semibold font-space-grotesk mt-1">Products</h1>
         <p className="text-sm opacity-75 mt-2 max-w-2xl">
           Monitor processed outputs, quantity, packaging, and trace labels generated from your batches.
         </p>
