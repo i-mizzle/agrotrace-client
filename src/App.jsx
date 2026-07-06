@@ -30,6 +30,7 @@ import NewBatch from './pages/user/producer/batches/NewBatch';
 import Products from './pages/user/producer/products/Products';
 import ProductDetails from './pages/user/producer/products/ProductDetails';
 import NewProduct from './pages/user/producer/products/NewProduct';
+// import InstallAppButton from './components/elements/InstallAppButton';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
       <Provider store={store}>
         <ErrorNotifier />
         <SuccessNotifier />
+        {/* <InstallAppButton /> */}
         <ScrollToTop>
           <Routes>
             <Route path="/" element={<Login />} />
