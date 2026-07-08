@@ -13,6 +13,8 @@ import Loader from '../../../../components/elements/Loader';
 import ErrorState from '../../../../components/elements/ErrorState';
 import { fetchEvents } from '../../../../store/actions/eventsActions';
 import PlusIcon from '../../../../components/elements/icons/PlusIcon';
+import { fetchProducts } from '../../../../store/actions/productsActions';
+import ProductCard from '../../../../components/elements/products/ProductCard';
 
 const StatusTimelineItem = ({ item, isLast }) => {
   const colors = statusColorMap[item.status] || statusColorMap.active
@@ -139,6 +141,7 @@ const AssetDetails = () => {
         const assetQr = await fetchAssetQr()
         setAsset(response.data.data)
         setAssetQr(assetQr)
+        dispatch(fetchProducts(`sourceAsset=${assetId}`, 1, 10))
       } catch (error) {
         console.error('Error fetching asset details:', error)
         dispatch({
@@ -162,10 +165,7 @@ const AssetDetails = () => {
           error
         })
       } 
-    }
-
-
-    
+    }  
 
     fetchAssetDetails()
   }, [assetId, dispatch])
@@ -332,17 +332,35 @@ const AssetDetails = () => {
               </Link>
             </div>
 
-            {productsSelector?.products?.products?.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {productsSelector?.products?.products?.map((product) => (
-                  <ProductCard product={product} key={product.id} />
-                ))}
-              </div>
-            ) : (
-              <div className="py-8 text-center">
-                <p className="text-sm opacity-60">No products have been created from this asset yet.</p>
-              </div>
-            )}
+            {productsSelector?.loadingProducts ? 
+              
+              <Loader />
+
+              : 
+
+              productsSelector?.productsError 
+              
+              ?
+              
+              <ErrorState errorStateTitle={`Sorry an Error Occurred!`} />
+
+              :
+              
+              productsSelector?.products?.products?.length > 0 ? 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {productsSelector?.products?.products?.map((product) => (
+                    <ProductCard product={product} key={product.id} />
+                  ))}
+                </div>
+               
+              : 
+              
+                <div className="py-8 text-center">
+                  <p className="text-sm opacity-60">No products have been created from this asset yet.</p>
+                </div>
+              
+            }
+
 
             <Link 
               to={`/producer/products/new-product?asset=${assetId}`}

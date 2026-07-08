@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 
 const TextareaField = ({inputLabel, fieldId, maxLength, requiredField, hasError, returnFieldValue, preloadValue, disabled, inputPlaceholder}) => {
 
-    const [ fieldValue, setFieldValue ] = useState(preloadValue)
+    const [ fieldValue, setFieldValue ] = useState(preloadValue || '')
 
     const setValue = (value) => {
         setFieldValue(value)
-        returnFieldValue(value)
+        if (returnFieldValue) {
+            returnFieldValue(value)
+        }
     }
 
     return (
@@ -27,7 +29,7 @@ const TextareaField = ({inputLabel, fieldId, maxLength, requiredField, hasError,
             </div>
             <textarea 
                 id={fieldId} 
-                 className={`rounded py-4 px-4 text-sm block w-full focus:border-gray-800 focus:outline-none hover:border-gray-200 dark:hover:border-at-dark-gray border bg-at-black/5 dark:bg-at-dark-gray/5 transition duration-200 focus:bg-white dark:focus:bg-at-black/60 font-outfit placeholder:font-outfit placeholder:text-slate-400  ${hasError ? 'border-red-400' : 'border-transparent'} min-h-30`}
+                className={`auto-grow-textarea rounded py-4 px-4 text-sm block w-full focus:border-gray-800 focus:outline-none hover:border-gray-200 dark:hover:border-at-dark-gray border bg-at-black/5 dark:bg-at-dark-gray/5 transition duration-200 focus:bg-white dark:focus:bg-at-black/60 font-outfit placeholder:font-outfit placeholder:text-slate-400 resize-none overflow-hidden ${hasError ? 'border-red-400' : 'border-transparent'} min-h-30`}
                 onChange={(e)=>{setValue(e.target.value)}}
                 value={fieldValue}
                 disabled={disabled}

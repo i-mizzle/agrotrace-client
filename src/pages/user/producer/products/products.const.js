@@ -53,3 +53,5 @@ export const productTypes = [
     ]
   }
 ]
+
+export const productUnits = ['kg', 'tons', 'head', 'cartons', 'bags', 'bottles', 'litres', 'gallons', 'pieces', 'crates']

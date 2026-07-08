@@ -26,6 +26,10 @@ h1, h2, h3, button {
   font-family: 'Outfit', sans-serif;
 }
 
+.auto-grow-textarea {
+  field-sizing: content;
+}
+
 :root {
   --background: #f7f7f9;
   --foreground: #171717;

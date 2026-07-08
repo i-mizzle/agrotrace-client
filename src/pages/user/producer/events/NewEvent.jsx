@@ -21,6 +21,7 @@ import PlusIcon from '../../../../components/elements/icons/PlusIcon';
 import TextField from '../../../../components/elements/form/TextField';
 import ToggleSwitch from '../../../../components/elements/form/ToggleSwitch';
 import TrashIcon from '../../../../components/elements/icons/TrashIcon';
+import { productTypes, productUnits } from '../products/products.const';
 
 const NewEvent = () => {
   const [eventPayload, setEventPayload] = useState({})
@@ -44,13 +45,30 @@ const NewEvent = () => {
       navigate(`/producer/events`)
     }
 
-    if(activeAsset) {
-      setEventPayload({ ...eventPayload, asset: activeAsset })
-    }
     return () => {
       
     }
   }, [eventsSelector?.createdEvent, dispatch])
+
+  useEffect(() => {
+    if (!activeAsset) {
+      return
+    }
+
+    setEventPayload((previousPayload) => ({ ...previousPayload, asset: activeAsset }))
+  }, [activeAsset])
+
+  useEffect(() => {
+    if (!activeAsset || !assetsSelector?.assets?.assets?.length) {
+      return
+    }
+
+    const matchedAsset = assetsSelector.assets.assets.find((asset) => asset.id === activeAsset)
+
+    if (matchedAsset) {
+      setSelectedAsset(matchedAsset)
+    }
+  }, [activeAsset, assetsSelector?.assets?.assets])
 
   const [validationErrors, setValidationErrors] = useState({})
   
@@ -105,8 +123,8 @@ const NewEvent = () => {
       }
     }
 
-    if (isEmpty(eventPayload?.costEstimate) || Number(eventPayload?.costEstimate) <= 0) {
-      errors.costEstimate = 'Cost estimate must be greater than 0'
+    if (isEmpty(eventPayload?.costEstimate) || Number(eventPayload?.costEstimate) < 0) {
+      errors.costEstimate = 'Cost estimate must be 0 or greater'
     }
 
     if (!eventPayload?.date || Number.isNaN(new Date(eventPayload?.date).getTime())) {
@@ -118,6 +136,32 @@ const NewEvent = () => {
     if (notesRequired && isEmpty(noteValue)) {
       errors.notes = 'Notes are required for this event'
     }
+
+    if(addProducts) {
+      if (products.length === 0) {
+        errors.products = 'Please add at least one product'
+      } else {
+        products.forEach((product, index) => {
+          if (!product.name) {
+            errors[`products[${index}].name`] = 'Product name is required'
+          }
+          if (!product.type) {
+            errors[`products[${index}].type`] = 'Product type is required'
+          }
+          if (!product.category) {
+            errors[`products[${index}].category`] = 'Product category is required'
+          }
+          if (!product.quantity || Number(product.quantity) <= 0) {
+            errors[`products[${index}].quantity`] = 'Product quantity must be greater than 0'
+          }
+          if (!product.unit) {
+            errors[`products[${index}].unit`] = 'Product unit is required'
+          }
+        })
+      }
+    }
+
+    console.log(errors, 'validation errors')
 
     setValidationErrors(errors)
     return Object.keys(errors).length === 0
@@ -133,6 +177,15 @@ const NewEvent = () => {
     }
 
     const payload = {...eventPayload}
+    if(addProducts && products.length > 0) {
+      payload.products = products.map(product => ({
+        ...product,
+        quantity: {
+          amount: Number(product.quantity), 
+          unit: product.unit
+        }
+      }))
+    }
     if(attachments?.length > 0 && attachments[0] !== '') {
       payload.attachments = attachments.map(attachment => ({ 
         type: ['jpg', 'jpeg', 'png'].includes(attachment.split('.').pop()) ? 'image' : ['mp4', 'mov'].includes(attachment.split('.').pop()) ? 'video' : ['pdf'].includes(attachment.split('.').pop()) ? 'document' : 'document',
@@ -171,9 +224,9 @@ const NewEvent = () => {
   }
 
   const addProduct = () => {
-    setProducts([...products, emptyProduct])
     // collapse all products before this new one
-    setCollapsedProductIndices([...collapsedProductIndices, products.length])
+    setCollapsedProductIndices([...collapsedProductIndices, products.length - 1])
+    setProducts([...products, emptyProduct])
   }
 
   const removeProduct = (index) => {
@@ -182,6 +235,14 @@ const NewEvent = () => {
       setProducts(updatedProducts)
     }
   }
+
+  const productTypeCategories = productTypes.flatMap(productType =>
+    productType.types.map(type => ({
+      name: unSlugify(type),
+      slug: type,
+      category: productType.category
+    }))
+  )
   
   return (
     <div className="w-full max-w-3xl">
@@ -366,7 +427,6 @@ const NewEvent = () => {
               inputPlaceholder="Add any notes about this event"
               requiredField={(eventPayload?.eventTypeCategory === 'health' || eventPayload.eventType === 'death') ? true : false}
             />
-
           </div>
 
           <div className="mt-5">
@@ -443,15 +503,27 @@ const NewEvent = () => {
                           <p className="font-medium text-sm">{product.name}</p>
                           <p className="text-xs">{product.quantity} {product.unit}</p>
                         </div>
-                        {index > 0 && <button className="p-2 rounded bg-slate-100 dark:bg-slate-900 absolute -top-3 right-0" onClick={() => removeProduct(index)}  >
-                          <TrashIcon className="w-4 h-4" />
-                        </button>}
+                        <div className="flex flex-row-reverse gap-x-2 w-12">
+                          <button className="p-2 rounded bg-slate-100 dark:bg-slate-900" onClick={() => toggleProductCollapse(index)}  >
+                            <ChevronIcon className={`w-4 h-4 ${collapsedProductIndices.includes(index) ? 'rotate-90' : '-rotate-90'}`} />
+                          </button>
+                          {index > 0 && <button className="p-2 rounded bg-slate-100 dark:bg-slate-900" onClick={() => removeProduct(index)}  >
+                            <TrashIcon className="w-4 h-4" />
+                          </button>}
+                        </div>
                       </div>)
                       :
                       <div className="relative">
-                        {index > 0 && <button className="p-2 rounded bg-slate-100 dark:bg-slate-900 absolute -top-3 right-0" onClick={() => removeProduct(index)}  >
-                          <TrashIcon className="w-4 h-4" />
-                        </button>}
+                        <div className="flex flex-row-reverse gap-x-2 w-12 absolute -top-3 right-0">
+                          <button className="p-2 rounded bg-slate-100 dark:bg-slate-900" onClick={() => toggleProductCollapse(index)}>
+                            <ChevronIcon className={`w-4 h-4 ${collapsedProductIndices.includes(index) ? 'rotate-90' : '-rotate-90'}`} />
+                          </button>
+                          {index > 0 && <button className="p-2 rounded bg-slate-100 dark:bg-slate-900" onClick={() => removeProduct(index)}>
+                            <TrashIcon className="w-4 h-4" />
+                          </button>}
+                        </div>
+
+                        
                         <div className="mt-5">
                           <TextField
                             inputLabel={`Product Name`}
@@ -463,28 +535,25 @@ const NewEvent = () => {
                               setProducts(updatedProducts)
                             }}
                             inputPlaceholder={`Enter product name`}
+                            preloadValue={product.name}
                           />
                         </div>
                         <div className="mt-1">
                           <AutocompleteSelect
-                            hasError={validationErrors.asset}
+                            hasError={validationErrors[`productCategory${index}`]}
                             inputLabel="Product Category"
-                            preSelected={''}
-                            preSelectedLabel="name"
+                            preSelected={product.type || ''}
+                            preSelectedLabel="slug"
                             requiredField={true}
                             returnFieldValue={(value) => {
-                              setEventPayload({ ...eventPayload, asset: value.id })
-                              setSelectedAsset(value)
+                              const updatedProducts = [...products]
+                              updatedProducts[index].category = value.category
+                              updatedProducts[index].type = value.slug
+                              setProducts(updatedProducts)
                             }}
-                            selectOptions={assetsSelector?.assets?.assets || []}
+                            selectOptions={productTypeCategories || []}
                             titleField="name"
                             placeholderText="Select a product category"
-                            enableSearch={true}
-                            searchFunction={(term) => {
-                              dispatch(fetchAssets(`searchTerm=${term}`))
-                            }}
-                            disabled={activeAsset ? true : false}
-                            searchInProgress={assetsSelector?.loadingAssets}
                           />
                         </div>
                         <div className="mt-1">
@@ -498,10 +567,12 @@ const NewEvent = () => {
                               setProducts(updatedProducts)
                             }}
                             inputPlaceholder={`Quantity Produced`}
+                            preloadValue={product.quantity}
                           />
                         </div>
+                        
                         <div className="mt-1">
-                          <TextField
+                          {/* <TextField
                             inputLabel={`Product Unit`}
                             requiredField={true}
                             hasError={validationErrors[`productUnit${index}`]}
@@ -511,6 +582,22 @@ const NewEvent = () => {
                               setProducts(updatedProducts)
                             }}
                             inputPlaceholder={`Enter product unit (e.g., kg, liters)`}
+                            preloadValue={product.unit}
+                          /> */}
+                          <AutocompleteSelect
+                            hasError={validationErrors[`unit${index}`]}
+                            inputLabel="Product Unit"
+                            preSelected={product.unit || ''}
+                            preSelectedLabel=""
+                            requiredField={true}
+                            returnFieldValue={(value) => {
+                              const updatedProducts = [...products]
+                              updatedProducts[index].unit = value
+                              setProducts(updatedProducts)
+                            }}
+                            selectOptions={productUnits || []}
+                            titleField=""
+                            placeholderText="Select a product unit"
                           />
                         </div>
                       </div>

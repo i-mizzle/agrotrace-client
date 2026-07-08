@@ -58,6 +58,11 @@ const AutocompleteSelect = ({
             if(!preSelected || preSelected === undefined) {
                 return
             }
+
+            if (preSelectedLabel && preSelected[preSelectedLabel]) {
+                setActiveValue(preSelected[preSelectedLabel])
+                return
+            }
     
             selectOptions?.forEach((option) => {
                 if (preSelectedLabel && preSelectedLabel !== '' && option[preSelectedLabel] && option[preSelectedLabel] === preSelected) {
